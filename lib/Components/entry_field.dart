@@ -1,5 +1,6 @@
 import 'package:delivoo/Themes/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class EntryField extends StatelessWidget {
   final TextEditingController controller;
@@ -11,16 +12,20 @@ class EntryField extends StatelessWidget {
   final int maxLength;
   final int maxLines;
   final String hint;
+  final bool onlyNumber ;
+
   final InputBorder border;
   final Widget suffixIcon;
   final Function onTap;
   final TextCapitalization textCapitalization;
   final Color imageColor;
   final bool isDense;
+  Function onChanged;
 
   EntryField(
       {this.controller,
       this.label,
+        this.onChanged,
       this.image,
       this.initialValue,
       this.readOnly,
@@ -28,7 +33,9 @@ class EntryField extends StatelessWidget {
       this.maxLength,
       this.hint,
       this.border,
-      this.maxLines,
+        this.onlyNumber= false,
+
+        this.maxLines,
       this.suffixIcon,
       this.onTap,
       this.textCapitalization,
@@ -41,10 +48,14 @@ class EntryField extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
       child: TextFormField(
+        onChanged:onChanged ,
         textCapitalization: textCapitalization ?? TextCapitalization.sentences,
         cursorColor: kMainColor,
         onTap: onTap,
         autofocus: false,
+        inputFormatters:onlyNumber? <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp(r'[+()0-9]+')),
+        ]:null,
         controller: controller,
         initialValue: initialValue,
         style: theme.textTheme.subtitle2

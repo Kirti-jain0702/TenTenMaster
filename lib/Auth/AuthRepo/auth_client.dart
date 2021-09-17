@@ -39,5 +39,5 @@ abstract class AuthClient {
   @PUT('api/user')
   Future<UserInformation> updateUser(
       @Body() Map<String, dynamic> updateUserRequest,
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 }

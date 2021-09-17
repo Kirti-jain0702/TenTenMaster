@@ -3,6 +3,7 @@ import 'package:delivoo/HomeOrderAccount/Account/Bloc/AddressBloc/address_event.
 import 'package:delivoo/HomeOrderAccount/Account/Bloc/AddressBloc/address_state.dart';
 import 'package:delivoo/HomeOrderAccount/HomeRepository/home_repository.dart';
 import 'package:delivoo/JsonFiles/Address/getaddress_json.dart';
+import 'package:dio/dio.dart';
 
 class AddressBloc extends Bloc<AddressEvent, AddressState> {
   HomeRepository _homeRepository = HomeRepository();
@@ -30,7 +31,11 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       List<GetAddress> listOfAddresses = await _homeRepository.getAddress();
       yield SuccessAddressState(listOfAddresses);
     } catch (e) {
-      throw FailureAddressState(e);
+      yield FailureAddressState(
+          e,
+          e is DioError && e.response != null && e.response.statusCode != null
+              ? e.response.statusCode
+              : -1);
     }
   }
 

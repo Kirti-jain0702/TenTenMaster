@@ -1,42 +1,93 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:delivoo/JsonFiles/Message/message.dart';
+import 'package:delivoo/AppConfig/app_config.dart';
+import 'package:delivoo/Constants/constants.dart';
+import 'package:delivoo/JsonFiles/Chat/message.dart';
+import 'package:dio/dio.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatRepository {
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final Dio dio;
+  DatabaseReference _chatRef, _inboxRef;
 
-  //method to save messages in firestore
-  saveMessages(Message message, String orderId, String innerCollection) async {
-    Map map = message.toJson();
-    map['chatId'] = innerCollection;
-    var document = _messagesCollection(orderId, innerCollection).doc();
-    map['messageId'] = document.id;
-    document.set(map);
+  ChatRepository._(this.dio);
+
+  factory ChatRepository() {
+    Dio dio = Dio();
+    dio.interceptors.add(PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+        responseHeader: false,
+        error: true,
+        compact: true,
+        maxWidth: 90));
+    dio.options.headers = {
+      "content-type": "application/json",
+      'Accept': 'application/json'
+    };
+    return ChatRepository._(dio);
   }
 
-//method to get stream of messages from firestore
-  Stream<List<Message>> getMessages(String orderId, String innerCollection) {
-    return _messagesCollection(orderId, innerCollection)
-        .orderBy('time', descending: true)
-        .snapshots()
-        .map((qs) {
-      List<Message> messages = qs.docs.map((DocumentSnapshot ds) {
-        Message message = Message.fromJson(ds.data());
-        return message;
-      }).toList();
-      return messages;
-    });
+  void setupDatabaseReferences(int orderId, String chatChild) {
+    _chatRef = FirebaseDatabase.instance
+        .reference()
+        .child(Constants.REF_CHAT)
+        .child("$orderId")
+        .child(chatChild);
+    _inboxRef =
+        FirebaseDatabase.instance.reference().child(Constants.REF_INBOX);
   }
 
-  setDelivered(String docId, String orderId, String innerCollection) {
-    Map<String, dynamic> map = {'isRead': true};
-    _messagesCollection(orderId, innerCollection).doc(docId).update(map);
+  Stream<Event> getMessagesFirebaseDbRef() {
+    return _chatRef.limitToLast(50).onChildAdded;
   }
 
-  CollectionReference _messagesCollection(
-      String orderId, String innerCollection) {
-    return _firestore
-        .collection('orders')
-        .doc(orderId)
-        .collection(innerCollection);
+  Future<void> setMessageDelivered(String messageId) {
+    return _chatRef.child(messageId).child("delivered").set(true);
+  }
+
+  Future<void> sendMessage(Message message) async {
+    message.id = _chatRef.child(message.chatId).push().key;
+    await _chatRef.child(message.id).set(message.toJson());
+    await _inboxRef
+        .child(message.recipientId)
+        .child(message.senderId)
+        .set(message.toJson());
+    await _inboxRef
+        .child(message.senderId)
+        .child(message.recipientId)
+        .set(message.toJson());
+  }
+
+  Future<bool> postNotificationContent(String roleTo, String userIdTo,
+      [String title, String body]) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      const _extra = <String, dynamic>{};
+      final queryParameters = <String, dynamic>{};
+      if (title != null && title.isNotEmpty)
+        queryParameters["message_title"] = title;
+      if (body != null && body.isNotEmpty)
+        queryParameters["message_body"] = body;
+      final _data = <String, dynamic>{};
+      _data["role"] = roleTo;
+      _data["user_id"] = userIdTo;
+      final _result = await dio.request<Map<String, dynamic>>(
+          'api/user/push-notification',
+          queryParameters: queryParameters,
+          options: RequestOptions(
+              method: 'POST',
+              headers: <String, dynamic>{
+                "Authorization": "Bearer ${prefs.getString('token')}"
+              },
+              extra: _extra,
+              baseUrl: AppConfig.baseUrl),
+          data: _data);
+      return _result.statusCode > 199 && _result.statusCode < 300;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 }

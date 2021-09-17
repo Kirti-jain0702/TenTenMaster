@@ -8,18 +8,25 @@ part of 'vendor_product.dart';
 
 VendorProduct _$VendorProductFromJson(Map json) {
   return VendorProduct(
-    json['id'] as int,
-    (json['price'] as num)?.toDouble(),
-    (json['sale_price'] as num)?.toDouble(),
-    (json['sale_price_from'] as num)?.toDouble(),
-    (json['sale_price_to'] as num)?.toDouble(),
-    json['stock_quantity'] as int,
-    json['stock_low_threshold'] as int,
-    json['product_id'] as int,
-    json['vendor_id'] as int,
-    json['vendor'] == null ? null : Vendor.fromJson(json['vendor'] as Map),
-    json['sells_count'] as int,
-    json['product'] == null
+    id: json['id'] as int,
+    price: (json['price'] as num)?.toDouble(),
+    salePrice: json['sale_price'] == null
+        ? 0.0
+        : (json['sale_price'] as num)?.toDouble(),
+    salePriceFrom: json['sale_price_from'] == null
+        ? 0.0
+        : (json['sale_price_from'] as num)?.toDouble(),
+    salePriceTo: json['sale_price_to'] == null
+        ? 0.0
+        : (json['sale_price_to'] as num)?.toDouble(),
+    stockQuantity: json['stock_quantity'] as int,
+    stockLowThreshold: json['stock_low_threshold'] as int,
+    productId: json['product_id'] as int,
+    vendorId: json['vendor_id'] as int,
+    vendor:
+        json['vendor'] == null ? null : Vendor.fromJson(json['vendor'] as Map),
+    sellsCount: json['sells_count'] as int,
+    product: json['product'] == null
         ? null
         : ProductData.fromJson(json['product'] as Map),
   );

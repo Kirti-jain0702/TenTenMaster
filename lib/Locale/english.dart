@@ -73,8 +73,6 @@ Map<String, String> englishLocale() {
     "earnings": "Earnings",
     "location": "Location permission denied!\nGrant the location to the app.",
     "grant": "Grant",
-    "account": "My Account",
-    "orderText": "My Orders",
     "saved": "Saved Addresses",
     "savedText": "No Saved Addresses!\nAdd new...",
     "notLogin": "Not logged in!",
@@ -136,9 +134,6 @@ Map<String, String> englishLocale() {
     "cauliflower": "Fresh Cauliflower",
     "add": "Add",
     "viewCart": "View Cart",
-    "placed": "Order Placed !!",
-    "thanks":
-        "\n\nThanks for choosing TENTEN for\ndelivering your needs.\n\nYou can check your order status\nin my order section.",
     "selectPayment": "Select Payment Method",
     "amount": "Amount to Pay ",
     "card": "Cards",
@@ -149,7 +144,7 @@ Map<String, String> englishLocale() {
     "payU": "PayU Money",
     "stripe": "Stripe",
     "saveAddress": "Save Address as",
-    "addressLabel": "FLAT NUM, LANDMARK, APARTMENT, ETC.",
+    "addressLabel": "Flat No., landmark, apartment, etc.",
     "deliver": "Deliver to ",
     "change": "CHANGE",
     "pay": "Pay",
@@ -311,7 +306,6 @@ Map<String, String> englishLocale() {
     "insufficient_wallet_verification": "Unable to verify Wallet Balance",
     "insufficient_wallet": "Insufficient funds in wallet.",
     "card_verification_fail": "Card verification failed.",
-    "placed_pay_failed": "Order Placed but Payment Failed",
     "card_info": "Card Info",
     "card_name": "Holder name",
     "card_number": "Card Number",
@@ -330,6 +324,29 @@ Map<String, String> englishLocale() {
     "save": "Save",
     "address_type_home": "Home",
     "address_type_office": "Office",
-    "address_type_other": "Other"
+    "address_type_other": "Other",
+    "select_address_type": "Select address type",
+    "invalid_length_message":
+        "Please write at least 10 characters and not more than 140 characters.",
+    "order_number": "Order #",
+    "takeaway": "Takeaway",
+    "cancel": "Cancel",
+    "demo_login_title": "Demo Login",
+    "demo_login_message":
+        "For demo purpose login information is pre-filled with demo credentials. You may choose to change the login information.",
+    "payment_setup_fail": "Payment not setup, contact administrator.",
+    "order_failed": "Order Failed",
+    "order_placed": "Order Placed",
+    "order_placed_msg":
+        "\n\nThanks for choosing us for\ndelivering your needs.\n\nYou can check your order status\nin my order section.",
+    "order_failed_msg":
+        "\n\nYour order was not successful\ndue to issues with payment.\n\nYou may retry later or with a different payment method.\nYour cart items are intact in cart.",
+    "my_orders": "My Orders",
+    "my_account": "My Account",
+    "warn_back_title": "Going Back",
+    "warn_back_message":
+        "This will cancel the payment and the order, are you sure you want to go back?",
+    "payment_success": "Payment success",
+    "payment_fail": "Payment failed"
   };
 }

@@ -1,3 +1,5 @@
+import 'package:delivoo/Auth/BLOC/auth_bloc.dart';
+import 'package:delivoo/Auth/BLOC/auth_event.dart';
 import 'package:delivoo/Components/bottom_bar.dart';
 import 'package:delivoo/Components/progress_loader.dart';
 import 'package:delivoo/Components/show_toast.dart';
@@ -59,6 +61,13 @@ class _AddressBottomSheetBodyState extends State<AddressBottomSheetBody> {
             } else if (state is DeleteAddressFailureState) {
               showToast(AppLocalizations.of(context)
                   .getTranslationOf('address_not_deleted'));
+            } else if (state is FailureAddressState) {
+              showToast(AppLocalizations.of(context)
+                  .getTranslationOf('something_went_wrong'));
+              Navigator.pop(context);
+              if (state.errorCode != null && state.errorCode == 401) {
+                BlocProvider.of<AuthBloc>(context).add(LoggedOut());
+              }
             }
           },
           builder: (context, state) {
@@ -179,7 +188,9 @@ class _AddressBottomSheetBodyState extends State<AddressBottomSheetBody> {
                                 );
                               })),
                   BottomBar(
-                    text: '+ Add new',
+                    text: '+ ' +
+                        AppLocalizations.of(context)
+                            .getTranslationOf('add_new'),
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => LocationPage()),

@@ -75,18 +75,64 @@ class OrderData {
     this.orderType,
   );
 
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is OrderData && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode;
+  }
+
   factory OrderData.fromJson(Map json) => _$OrderDataFromJson(json);
 
   Map toJson() => _$OrderDataToJson(this);
 
   setup() {
-    Moment createdAtMoment = Moment.parse(createdAt);
-    createdAtFormatted = createdAtMoment.format("dd MMM yyyy, HH:mm");
+    createdAtFormatted = Moment.parse(createdAt).format("dd MMM yyyy, HH:mm");
+    if (scheduledOn != null)
+      scheduledOnFormatted =
+          Moment.parse(scheduledOn).format("dd MMM yyyy, HH:mm");
   }
 
   OrderMeta get meta {
     return (dynamicMeta != null && dynamicMeta is Map)
         ? OrderMeta.fromJson(dynamicMeta)
         : null;
+  }
+
+  bool isLoadingOrder() {
+    return id < 0;
+  }
+
+  static OrderData loadingOrder() {
+    return OrderData(
+      -1,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+    );
   }
 }

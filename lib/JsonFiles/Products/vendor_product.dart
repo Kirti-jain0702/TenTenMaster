@@ -29,7 +29,7 @@ class VendorProduct {
   final int sellsCount;
 
   VendorProduct(
-      this.id,
+  { this.id,
       this.price,
       this.salePrice,
       this.salePriceFrom,
@@ -40,7 +40,8 @@ class VendorProduct {
       this.vendorId,
       this.vendor,
       this.sellsCount,
-      this.product);
+      this.product}
+      );
 
   factory VendorProduct.fromJson(Map json) => _$VendorProductFromJson(json);
 

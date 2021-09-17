@@ -7,7 +7,6 @@ import 'package:delivoo/Routes/routes.dart';
 import 'package:delivoo/Themes/colors.dart';
 import 'package:delivoo/Themes/style.dart';
 import 'package:delivoo/UtilityFunctions/app_settings.dart';
-import 'package:delivoo/UtilityFunctions/get_date.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

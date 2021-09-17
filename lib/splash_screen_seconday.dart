@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class SplashScreenSecondary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: kWhiteColor,
       body: Center(

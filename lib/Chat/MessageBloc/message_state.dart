@@ -10,6 +10,8 @@ class MessageState extends Equatable {
 
 class MessageLoadingState extends MessageState {}
 
+class MessageSentState extends MessageState {}
+
 class MessageSuccessState extends MessageState {
   final List<Message> messages;
 

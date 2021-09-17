@@ -1,5 +1,6 @@
 import 'package:delivoo/JsonFiles/Wallet/Transaction/transaction.dart';
 import 'package:delivoo/JsonFiles/Wallet/get_wallet_balance.dart';
+import 'package:delivoo/Payment/process_payment_page.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class WalletState extends Equatable {
@@ -22,19 +23,19 @@ class SuccessWalletState extends WalletState {
   List<Object> get props => [walletBalance, walletTransactions];
 }
 
-class WalletRechargeState extends WalletState {
-  final bool paid;
+class WalletDepositState extends WalletState {
+  final PaymentData paymentData;
 
-  WalletRechargeState(this.paid);
+  WalletDepositState(this.paymentData);
 
   @override
-  List<Object> get props => [paid];
+  List<Object> get props => [paymentData];
 }
 
 class FailureWalletState extends WalletState {
   final String errorMessage;
 
-  FailureWalletState([this.errorMessage]);
+  FailureWalletState(this.errorMessage);
 
   @override
   List<Object> get props => [errorMessage];

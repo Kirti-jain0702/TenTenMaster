@@ -9,7 +9,6 @@ part of 'home_client.dart';
 class _HomeClient implements HomeClient {
   _HomeClient(this._dio, {this.baseUrl}) {
     ArgumentError.checkNotNull(_dio, '_dio');
-    /* baseUrl ??= 'https://www.yourapibase.com/'; */
     baseUrl ??= 'https://admin.tentenecom.com/';
   }
 
@@ -259,4 +258,24 @@ class _HomeClient implements HomeClient {
     final value = Coupon.fromJson(_result.data);
     return value;
   }
+
+
+  @override
+  Future<BannerData> getBanners() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.request<Map<String, dynamic>>(
+        'api/banners',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'GET',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    final value = BannerData.fromJson(_result.data);
+    return value;
+  }
+
 }

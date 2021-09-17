@@ -57,7 +57,6 @@ class _RegisterFormState extends State<RegisterForm> {
     super.initState();
     _registerBloc = BlocProvider.of<SignUpBloc>(context);
   }
-
   @override
   void dispose() {
     _nameController.dispose();
@@ -119,7 +118,9 @@ class _RegisterFormState extends State<RegisterForm> {
                     label: AppLocalizations.of(context).mobileNumber,
                     image: 'images/icons/ic_phone.png',
                     initialValue: widget.phoneNumber,
-                    readOnly: true,
+                    keyboardType: TextInputType.number,
+                    readOnly: false,
+                    onlyNumber: true,
                   ),
 
                   Text(

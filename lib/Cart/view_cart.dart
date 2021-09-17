@@ -16,11 +16,12 @@ import 'package:delivoo/HomeOrderAccount/Account/Bloc/AddressBloc/address_state.
 import 'package:delivoo/HomeOrderAccount/Home/Bloc/CartQuantityBloc/cart_quantity_bloc.dart';
 import 'package:delivoo/HomeOrderAccount/Home/Bloc/CartQuantityBloc/cart_quantity_event.dart';
 import 'package:delivoo/HomeOrderAccount/Home/UI/address_bottom_sheet.dart';
-import 'package:delivoo/HomeOrderAccount/Home/checkout_navigator.dart';
 import 'package:delivoo/Items/items_tab.dart';
 import 'package:delivoo/JsonFiles/Address/getaddress_json.dart';
 import 'package:delivoo/JsonFiles/Products/product_data.dart';
+import 'package:delivoo/JsonFiles/pre_order_data.dart';
 import 'package:delivoo/Locale/locales.dart';
+import 'package:delivoo/Payment/place_order_page.dart';
 import 'package:delivoo/Themes/colors.dart';
 import 'package:delivoo/UtilityFunctions/app_settings.dart';
 import 'package:delivoo/UtilityFunctions/helper.dart';
@@ -59,7 +60,8 @@ class ViewCartBody extends StatefulWidget {
   _ViewCartState createState() => _ViewCartState();
 }
 
-class _ViewCartState extends State<ViewCartBody> {
+class _ViewCartState extends State<ViewCartBody>
+    with SingleTickerProviderStateMixin {
   double taxInPercent = double.parse(AppSettings.taxInPercent);
   TextEditingController _instructionsController = TextEditingController();
   TextEditingController _promoController = TextEditingController();
@@ -71,6 +73,7 @@ class _ViewCartState extends State<ViewCartBody> {
   double animatedHeight = 0;
   bool couponCodeFieldEmpty = true;
   bool isLoaderShowing = false;
+  AnimationController _controller;
 
   getVendorAndTotal() async {
     var prefs = await SharedPreferences.getInstance();
@@ -82,6 +85,10 @@ class _ViewCartState extends State<ViewCartBody> {
 
   @override
   void initState() {
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 400),
+    );
     _promoController.addListener(() {
       bool isEmpty = _promoController.text.isEmpty;
       if (couponCodeFieldEmpty != isEmpty) {
@@ -92,6 +99,12 @@ class _ViewCartState extends State<ViewCartBody> {
     });
     super.initState();
     getVendorAndTotal();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -355,7 +368,13 @@ class _ViewCartState extends State<ViewCartBody> {
                               onTap: () {
                                 setState(() {
                                   isPaymentInfoOpen = !isPaymentInfoOpen;
-                                  animatedHeight = isPaymentInfoOpen ? 140 : 0;
+                                  if (isPaymentInfoOpen) {
+                                    _controller.forward();
+                                  } else {
+                                    _controller.reverse();
+                                  }
+                                  /* isPaymentInfoOpen = !isPaymentInfoOpen;
+                                  animatedHeight = isPaymentInfoOpen ? 140 : 0;*/
                                 });
                               },
                               child: Row(
@@ -378,8 +397,13 @@ class _ViewCartState extends State<ViewCartBody> {
                                         setState(() {
                                           isPaymentInfoOpen =
                                               !isPaymentInfoOpen;
-                                          animatedHeight =
-                                              isPaymentInfoOpen ? 140 : 0;
+                                          if (isPaymentInfoOpen) {
+                                            _controller.forward();
+                                          } else {
+                                            _controller.reverse();
+                                          }
+                                          /*  animatedHeight =
+                                              isPaymentInfoOpen ? 140 : 0;*/
                                         });
                                       },
                                       icon: Icon(isPaymentInfoOpen
@@ -388,129 +412,133 @@ class _ViewCartState extends State<ViewCartBody> {
                                 ],
                               ),
                             ),
-                            AnimatedContainer(
-                              height: animatedHeight,
-                              duration: Duration(milliseconds: 400),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 4.0, horizontal: 20.0),
-                                    child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                            AppLocalizations.of(context)
-                                                .deliveryCharge,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption,
-                                          ),
-                                          Text(
-                                            '${AppSettings.currencyIcon} ${AppSettings.setupNumber(AppSettings.deliveryFee)}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption,
-                                          ),
-                                        ]),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 4.0, horizontal: 20.0),
-                                    child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                            AppLocalizations.of(context).sub,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption,
-                                          ),
-                                          Text(
-                                            '${AppSettings.currencyIcon} ${cartTotal.toStringAsFixed(2)}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption,
-                                          ),
-                                        ]),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 4.0, horizontal: 20.0),
-                                    child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                            AppLocalizations.of(context)
-                                                .service,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption,
-                                          ),
-                                          Text(
-                                            AppSettings.currencyIcon +
-                                                ' ' +
-                                                ' ${((taxInPercent / 100) * cartTotal).toStringAsFixed(2)}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption,
-                                          ),
-                                        ]),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 4.0, horizontal: 20.0),
-                                    child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                            AppLocalizations.of(context)
-                                                .discount,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption,
-                                          ),
-                                          Text(
-                                            AppSettings.currencyIcon +
-                                                ' ' +
-                                                ' ${(_coupon == null ? 0 : _coupon.type == "percent" ? ((cartTotal * _coupon.reward) / 100) : (_coupon.reward)).toStringAsFixed(2)}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption,
-                                          ),
-                                        ]),
-                                  ),
-                                  Container(
-                                    color: Theme.of(context)
-                                        .scaffoldBackgroundColor,
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 4.0, horizontal: 20.0),
-                                    child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                            AppLocalizations.of(context).amount,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption
-                                                .copyWith(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                          ),
-                                          Text(
-                                            '${AppSettings.currencyIcon} ${total.toStringAsFixed(2)}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .caption,
-                                          ),
-                                        ]),
-                                  ),
-                                ],
+                            SizeTransition(
+                              sizeFactor: _controller,
+                              child: Container(
+                                height: 140,
+                                //duration: Duration(milliseconds: 400),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 4.0, horizontal: 20.0),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text(
+                                              AppLocalizations.of(context)
+                                                  .deliveryCharge,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption,
+                                            ),
+                                            Text(
+                                              '${AppSettings.currencyIcon} ${AppSettings.setupNumber(AppSettings.deliveryFee)}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption,
+                                            ),
+                                          ]),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 4.0, horizontal: 20.0),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text(
+                                              AppLocalizations.of(context).sub,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption,
+                                            ),
+                                            Text(
+                                              '${AppSettings.currencyIcon} ${cartTotal.toStringAsFixed(2)}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption,
+                                            ),
+                                          ]),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 4.0, horizontal: 20.0),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text(
+                                              AppLocalizations.of(context)
+                                                  .service,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption,
+                                            ),
+                                            Text(
+                                              AppSettings.currencyIcon +
+                                                  ' ' +
+                                                  ' ${((taxInPercent / 100) * cartTotal).toStringAsFixed(2)}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption,
+                                            ),
+                                          ]),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 4.0, horizontal: 20.0),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text(
+                                              AppLocalizations.of(context)
+                                                  .discount,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption,
+                                            ),
+                                            Text(
+                                              AppSettings.currencyIcon +
+                                                  ' ' +
+                                                  ' ${(_coupon == null ? 0 : _coupon.type == "percent" ? ((cartTotal * _coupon.reward) / 100) : (_coupon.reward)).toStringAsFixed(2)}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption,
+                                            ),
+                                          ]),
+                                    ),
+                                    Container(
+                                      color: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 4.0, horizontal: 20.0),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text(
+                                              AppLocalizations.of(context)
+                                                  .amount,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                            ),
+                                            Text(
+                                              '${AppSettings.currencyIcon} ${total.toStringAsFixed(2)}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption,
+                                            ),
+                                          ]),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             BlocBuilder<AddressBloc, AddressState>(
@@ -521,63 +549,69 @@ class _ViewCartState extends State<ViewCartBody> {
                                         ? state.address
                                         : null;
                                 if (_address != null) {
-                                  return GestureDetector(
-                                    onTap: () => showAddressSheet(),
-                                    child: Container(
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 20.0,
-                                            right: 20.0,
-                                            top: 13.0,
-                                            bottom: 13.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
+                                  return Container(
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 20.0,
+                                          right: 20.0,
+                                          top: 13.0,
+                                          bottom: 13.0),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Icon(
-                                                  Icons.location_on,
-                                                  color: Color(0xffc4c8c1),
-                                                  size: 13.3,
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.location_on,
+                                                      color: Color(0xffc4c8c1),
+                                                      size: 13.3,
+                                                    ),
+                                                    SizedBox(width: 10),
+                                                    Text(
+                                                        AppLocalizations.of(context)
+                                                            .deliver,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .caption
+                                                            .copyWith(
+                                                                color:
+                                                                    kDisabledColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold)),
+                                                    Text(_address.title,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .caption
+                                                            .copyWith(
+                                                                color: kMainColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold)),
+                                                  ],
                                                 ),
-                                                SizedBox(width: 10),
-                                                Text(
-                                                    AppLocalizations.of(context)
-                                                        .deliver,
+                                                SizedBox(height: 12.0),
+                                                Text(_address.formattedAddress,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .caption
                                                         .copyWith(
+                                                            fontSize: 11.7,
                                                             color:
-                                                                kDisabledColor,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                Text(_address.title,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .caption
-                                                        .copyWith(
-                                                            color: kMainColor,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
+                                                                Color(0xffb7b7b7)))
                                               ],
                                             ),
-                                            SizedBox(height: 12.0),
-                                            Text(_address.formattedAddress,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption
-                                                    .copyWith(
-                                                        fontSize: 11.7,
-                                                        color:
-                                                            Color(0xffb7b7b7)))
-                                          ],
-                                        ),
+                                          ),
+                                          SizedBox(width: 8.0),
+                                          ElevatedButton(onPressed: ()=>showAddressSheet(), child: Text("Change location",style:TextStyle(fontSize: 12),))
+                                        ],
                                       ),
                                     ),
                                   );
@@ -683,7 +717,7 @@ class _ViewCartState extends State<ViewCartBody> {
               ? ((cartTotal * _coupon.reward) / 100)
               : (_coupon.reward));
 
-  Padding cartOrderItemListTile(ProductData productData) {
+  Widget cartOrderItemListTile(ProductData productData) {
     var theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.only(bottom: 8.0),
@@ -692,10 +726,93 @@ class _ViewCartState extends State<ViewCartBody> {
           Divider(thickness: 2, height: 2, color: theme.cardColor),
           SizedBox(height: 8),
           ListTile(
-            title: Text(
-              productData.title,
-              style: theme.textTheme.subtitle2
-                  .copyWith(color: theme.secondaryHeaderColor),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(left: 10),
+                  child: Text(
+                    productData.title,
+                    style: theme.textTheme.subtitle2
+                        .copyWith(color: theme.secondaryHeaderColor),
+                  ),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                /*   return PopupMenuItem(
+    child: Text(productData.addOnGroups[0].addOnChoices[0].title),
+    value: 1,
+    )*/
+               if(productData.addOnGroups.length>0) PopupMenuButton(
+                  onSelected: (val){
+                    productData.price = productData
+                        .addOnGroups[0]
+                        .addOnChoices
+                        .firstWhere(
+                            (element) =>
+                        element
+                            .title ==
+                            val)
+                        .price;
+                    setState(() {
+                      productData.selectedKey= val;
+                      productData.addOnGroups.first.addOnChoices.forEach((e) {
+                        if(val==e.title){
+                          e.selected=true;
+                        }else{
+                          e.selected=false;
+                        }
+
+                      });
+                      cartTotal = getTotal();
+                    });
+                  },
+                    itemBuilder: (context) =>
+                        productData.addOnGroups[0].addOnChoices
+                            .map((e) => PopupMenuItem(
+                                  child: Text(e.title),
+                                  value: e.title,
+                                ))
+                            .toList(),
+                    child: Container(
+                            margin: EdgeInsets.only(left: 6),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 6),
+                            decoration: BoxDecoration(
+                                color: Color(0xfff8f9fd),
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                    productData.selectedKey == null ||
+                                            productData.selectedKey == ''
+                                        ? productData.addOnGroups[0]
+                                            .addOnChoices[0].title
+                                        : productData.selectedKey,
+                                    style: theme.textTheme.caption
+                                        .copyWith(fontSize: 12)),
+                                SizedBox(
+                                  width: 4,
+                                ),
+                                Icon(
+                                  Icons.keyboard_arrow_down,
+                                  color: kMainColor,
+                                  size: 20,
+                                ),
+                                SizedBox(
+                                  width: 4,
+                                ),
+                              ],
+                            ),
+                          )
+                        )else SizedBox()
+              ],
             ),
             trailing: Container(
               width: 156,
@@ -792,16 +909,23 @@ class _ViewCartState extends State<ViewCartBody> {
         isScrollControlled: true,
         context: context,
         builder: (context) => OrderTypeWidget()).then((value) {
-      if (value != null && value is PaymentData) {
-        Navigator.pushReplacementNamed(context, CheckoutRoutes.paymentPage,
-            arguments: PaymentData(
+      if (value != null && value is PreOrderData) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PlaceOrderPage(
+              PreOrderData(
                 total,
                 _address.id,
                 _instructionsController.text,
                 _coupon != null ? _coupon.code : null,
                 value.type,
                 value.scheduled_on,
-                value.order_type));
+                value.order_type,
+              ),
+            ),
+          ),
+        );
       }
     });
   }
@@ -820,6 +944,7 @@ class _OrderTypeWidgetState extends State<OrderTypeWidget> {
   @override
   void initState() {
     Moment now = Moment.now();
+
     scheduledOnDate = now.format("yyyy-MM-dd");
     scheduledOnTime = now.format("HH:mm:ss");
     super.initState();
@@ -839,8 +964,8 @@ class _OrderTypeWidgetState extends State<OrderTypeWidget> {
           ),
           BottomBar(
               onTap: () => Navigator.pop(
-                  context,
-                  PaymentData(
+                    context,
+                    PreOrderData(
                       null,
                       null,
                       null,
@@ -851,7 +976,9 @@ class _OrderTypeWidgetState extends State<OrderTypeWidget> {
                           : Moment.parse(
                                   scheduledOnDate + " " + scheduledOnTime)
                               .format("yyyy-MM-dd HH:mm:ss"),
-                      "NORMAL")),
+                      "NORMAL",
+                    ),
+                  ),
               text: AppLocalizations.of(context).continueText)
         ],
       ),

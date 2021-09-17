@@ -6,6 +6,7 @@ import 'package:delivoo/HomeOrderAccount/Home/Bloc/CustomDeliveryBloc/custom_del
 import 'package:delivoo/HomeOrderAccount/Home/Bloc/CustomDeliveryBloc/custom_delivery_state.dart';
 import 'package:delivoo/HomeOrderAccount/HomeRepository/home_client.dart';
 import 'package:delivoo/JsonFiles/Address/getaddress_json.dart';
+import 'package:delivoo/JsonFiles/Banner/Banner.dart';
 import 'package:delivoo/JsonFiles/CustomDelivery/custom_delivery.dart';
 import 'package:delivoo/JsonFiles/CustomDelivery/delivery_fee.dart';
 import 'package:delivoo/JsonFiles/CustomDelivery/order_meta.dart';
@@ -46,7 +47,9 @@ class HomeRepository {
   Future<List<GetAddress>> getAddress() {
     return client.getAddresses();
   }
-
+  Future<BannerData> getBanners() async {
+    return client.getBanners();
+  }
   Future<Coupon> verifyCoupon(String couponCode) {
     return client.checkCouponValidity(couponCode);
   }

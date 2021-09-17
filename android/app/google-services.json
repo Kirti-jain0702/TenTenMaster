@@ -14,6 +14,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "87967008375-01t798kbrjpb3r7fao939mgpp1j3dg3i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tentendelivery.customer",
+            "certificate_hash": "b7aaab0afb0321c31cc99bda2fdb0f16ce557d7b"
+          }
+        },
+        {
+          "client_id": "87967008375-bd8l8o6roehdhbtk6ffffevjj7f05bmk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tentendelivery.customer",
+            "certificate_hash": "4922cc4f756518e41d0da50ca85bba48a58c151a"
+          }
+        },
+        {
+          "client_id": "87967008375-peoocg5lb6hp74sadmdqtc1aihc2fj8t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tentendelivery.customer",
+            "certificate_hash": "3bce64a5a1b1361593ab694afcec2b32d77348f7"
+          }
+        },
+        {
           "client_id": "87967008375-3j2j6osv4e0hqn5lqdn870j333eib499.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -43,6 +67,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "87967008375-hjt2qd1gqa8dfbjc0a6v2c64n42j5kka.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tentendelivery.partner",
+            "certificate_hash": "b7aaab0afb0321c31cc99bda2fdb0f16ce557d7b"
+          }
+        },
+        {
           "client_id": "87967008375-3j2j6osv4e0hqn5lqdn870j333eib499.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -71,6 +103,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "87967008375-c76mmos9b5efsnpr91vq6ndku1n6pk15.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tentendelivery.store",
+            "certificate_hash": "b7aaab0afb0321c31cc99bda2fdb0f16ce557d7b"
+          }
+        },
         {
           "client_id": "87967008375-3j2j6osv4e0hqn5lqdn870j333eib499.apps.googleusercontent.com",
           "client_type": 3

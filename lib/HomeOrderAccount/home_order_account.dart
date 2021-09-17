@@ -45,11 +45,11 @@ class _HomeOrderAccountState extends State<HomeOrderAccount> {
         image: bottomIconHome,
       ),
       BarItem(
-        text: appLocalization.orderText,
+        text: appLocalization.getTranslationOf("my_orders"),
         image: bottomIconOrder,
       ),
       BarItem(
-        text: appLocalization.account,
+        text: appLocalization.getTranslationOf("my_account"),
         image: bottomIconAccount,
       ),
     ];

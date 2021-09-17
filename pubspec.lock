@@ -15,6 +15,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.41.2"
+  animation_wrappers:
+    dependency: "direct main"
+    description:
+      name: animation_wrappers
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.5"
   archive:
     dependency: transitive
     description:
@@ -119,7 +126,7 @@ packages:
       name: carousel_slider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "2.3.1"
   characters:
     dependency: transitive
     description:
@@ -162,27 +169,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
-  cloud_firestore:
-    dependency: "direct main"
-    description:
-      name: cloud_firestore
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.16.0+1"
-  cloud_firestore_platform_interface:
-    dependency: transitive
-    description:
-      name: cloud_firestore_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.2"
-  cloud_firestore_web:
-    dependency: transitive
-    description:
-      name: cloud_firestore_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.0+2"
   code_builder:
     dependency: transitive
     description:
@@ -197,13 +183,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
-  color:
-    dependency: transitive
-    description:
-      name: color
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.1"
   convert:
     dependency: transitive
     description:
@@ -211,15 +190,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
-  country_code_picker:
+  country_picker:
     dependency: "direct main"
     description:
-      name: country_code_picker
+      name: country_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.0"
+    version: "2.0.7"
   crypto:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: crypto
       url: "https://pub.dartlang.org"
@@ -433,6 +412,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.8"
+  flutter_inappwebview:
+    dependency: "direct main"
+    description:
+      name: flutter_inappwebview
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.3.2"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -458,7 +444,7 @@ packages:
       name: flutter_native_splash
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.9"
+    version: "0.3.1"
   flutter_phoenix:
     dependency: "direct main"
     description:
@@ -504,6 +490,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.1.8"
+  focus_detector:
+    dependency: "direct main"
+    description:
+      name: focus_detector
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   geolocator:
     dependency: "direct main"
     description:
@@ -538,14 +531,7 @@ packages:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
-  google_maps_flutter_platform_interface:
-    dependency: transitive
-    description:
-      name: google_maps_flutter_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.2.0"
+    version: "0.5.26+4"
   google_maps_webservice:
     dependency: transitive
     description:
@@ -693,6 +679,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  marquee_widget:
+    dependency: "direct main"
+    description:
+      name: marquee_widget
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
   matcher:
     dependency: transitive
     description:
@@ -714,13 +707,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  modal_bottom_sheet:
-    dependency: transitive
-    description:
-      name: modal_bottom_sheet
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0+1"
   nested:
     dependency: transitive
     description:
@@ -917,6 +903,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.25.0"
+  search_map_place:
+    dependency: "direct main"
+    description:
+      name: search_map_place
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -1012,14 +1005,14 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0+3"
+    version: "2.0.0+4"
   sqflite_common:
     dependency: transitive
     description:
       name: sqflite_common
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0+2"
+    version: "2.0.1"
   stack_trace:
     dependency: transitive
     description:
@@ -1040,7 +1033,7 @@ packages:
       name: stream_transform
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0"
   string_scanner:
     dependency: transitive
     description:
@@ -1153,6 +1146,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  visibility_detector:
+    dependency: transitive
+    description:
+      name: visibility_detector
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   watcher:
     dependency: transitive
     description:
@@ -1173,7 +1173,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.5"
+    version: "2.2.9"
   xdg_directories:
     dependency: transitive
     description:
@@ -1197,4 +1197,4 @@ packages:
     version: "2.2.1"
 sdks:
   dart: ">=2.13.0 <3.0.0"
-  flutter: ">=1.24.0-10"
+  flutter: ">=1.24.0-7.0"

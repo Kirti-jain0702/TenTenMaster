@@ -9,7 +9,6 @@ import 'package:delivoo/Themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class RateNowPage extends StatelessWidget {
   @override
@@ -34,6 +33,7 @@ class RateNowBody extends StatefulWidget {
 class _RateNowBodyState extends State<RateNowBody> {
   TextEditingController _controller = TextEditingController();
   double rating;
+  bool isLoaderShowing = false;
 
   CreateRatingsBloc _createRatingsBloc;
 
@@ -53,13 +53,14 @@ class _RateNowBodyState extends State<RateNowBody> {
   Widget build(BuildContext context) {
     return BlocListener<CreateRatingsBloc, CreateRatingsState>(
       listener: (context, state) async {
+        if (state is CreateRatingsInProgress) {
+          showLoader();
+        } else {
+          dismissLoader();
+        }
         if (state is CreateRatingsSuccess) {
-          if (widget.vendor != null) {
-            var prefs = await SharedPreferences.getInstance();
-            await prefs.setBool(widget.vendor?.id.toString(), true);
-            showToast(
-                AppLocalizations.of(context).getTranslationOf('review_posted'));
-          }
+          showToast(
+              AppLocalizations.of(context).getTranslationOf('review_posted'));
           Navigator.pop(context);
         } else if (state is CreateRatingsFailure) {
           showToast(AppLocalizations.of(context)
@@ -169,12 +170,14 @@ class _RateNowBodyState extends State<RateNowBody> {
             ),
             BottomBar(
               onTap: () {
-                if (_controller.text.length > 0)
+                if (_controller.text.trim().length < 10 ||
+                    _controller.text.trim().length > 140) {
+                  showToast(AppLocalizations.of(context)
+                      .getTranslationOf("invalid_length_message"));
+                } else {
                   _createRatingsBloc
                       .add(PostRatingsEvent(rating, _controller.text));
-                else
-                  showToast(AppLocalizations.of(context)
-                      .getTranslationOf('add_review'));
+                }
               },
               text: AppLocalizations.of(context).feedback,
             ),
@@ -182,5 +185,29 @@ class _RateNowBodyState extends State<RateNowBody> {
         ),
       ),
     );
+  }
+
+  showLoader() {
+    if (!isLoaderShowing) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        useRootNavigator: false,
+        builder: (BuildContext context) {
+          return Center(
+              child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation(kMainColor),
+          ));
+        },
+      );
+      isLoaderShowing = true;
+    }
+  }
+
+  dismissLoader() {
+    if (isLoaderShowing) {
+      Navigator.of(context).pop();
+      isLoaderShowing = false;
+    }
   }
 }

@@ -8,6 +8,7 @@ class CategoryData {
   final int id;
   final String slug;
   final String title;
+  final String image_url;
 
   @JsonKey(name: 'mediaurls')
   final dynamic dynamicMediaUrls;
@@ -19,6 +20,7 @@ class CategoryData {
     this.id,
     this.slug,
     this.title,
+    this.image_url,
     this.dynamicMediaUrls,
     this.parentId,
   });

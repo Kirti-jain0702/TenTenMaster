@@ -9,7 +9,6 @@ import 'package:delivoo/HomeOrderAccount/Account/UI/ListItems/wallet_page.dart';
 import 'package:delivoo/HomeOrderAccount/Account/UI/account_page.dart';
 import 'package:delivoo/HomeOrderAccount/Home/UI/home_page.dart';
 import 'package:delivoo/HomeOrderAccount/Home/UI/order_info_page.dart';
-import 'package:delivoo/HomeOrderAccount/Home/checkout_navigator.dart';
 import 'package:delivoo/HomeOrderAccount/Order/UI/list_of_order_page.dart';
 import 'package:delivoo/HomeOrderAccount/Order/UI/rate_now_page.dart';
 import 'package:delivoo/Maps/UI/location_page.dart';
@@ -31,7 +30,6 @@ class PageRoutes {
   static const String addMoney = 'addMoney_page';
   static const String settings = 'settings_page';
   static const String review = 'reviews';
-  static const String checkout = 'checkout';
   static const String rateNow = 'rate_now';
   static const String offersPage = 'offers_page';
 
@@ -50,7 +48,6 @@ class PageRoutes {
       addMoney: (context) => AddMoneyPage(),
       settings: (context) => SettingsPage(),
       review: (context) => ReviewPage(),
-      checkout: (context) => CheckoutNavigator(),
       rateNow: (context) => RateNowPage(),
       offersPage: (context) => OffersPage(),
     };

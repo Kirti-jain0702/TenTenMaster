@@ -24,14 +24,15 @@ class PaymentMethod {
 
   Map<String, dynamic> toJson() => _$PaymentMethodToJson(this);
 
-  String getMetaStripe() {
+  String getMetaKey(String key) {
+    //key: public_key or private_key
     String toReturn;
     if (meta != null) {
       try {
         Map metaMap = jsonDecode(meta);
-        if (metaMap.containsKey("public_key")) toReturn = metaMap["public_key"];
+        if (metaMap.containsKey(key)) toReturn = metaMap[key];
       } catch (e) {
-        print("getMetaStripe: $e");
+        print("key: $key getMetaKey: $e");
       }
     }
     return toReturn;

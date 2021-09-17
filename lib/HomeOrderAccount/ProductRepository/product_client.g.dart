@@ -9,7 +9,6 @@ part of 'product_client.dart';
 class _ProductClient implements ProductClient {
   _ProductClient(this._dio, {this.baseUrl}) {
     ArgumentError.checkNotNull(_dio, '_dio');
-    /* baseUrl ??= 'https://www.yourapibase.com/'; */
     baseUrl ??= 'https://admin.tentenecom.com/';
   }
 
@@ -86,7 +85,7 @@ class _ProductClient implements ProductClient {
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.request<Map<String, dynamic>>(
-        'api/categories?parent=1',
+        'api/categories?parent=1&scope=ecommerce',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'GET',
@@ -157,7 +156,7 @@ class _ProductClient implements ProductClient {
   }
 
   @override
-  Future<OrderData> postOrder(map, [token]) async {
+  Future<OrderData> postOrder(map, {double price, token}) async {
     ArgumentError.checkNotNull(map, 'map');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -172,7 +171,11 @@ class _ProductClient implements ProductClient {
             extra: _extra,
             baseUrl: baseUrl),
         data: _data);
+    print("trueValueTrue");
+
     final value = OrderData.fromJson(_result.data);
+    value.payment.amount= price;
+    print("trueValue >> $value");
     return value;
   }
 
@@ -257,6 +260,7 @@ class _ProductClient implements ProductClient {
       _result.data,
       (json) => OrderData.fromJson(json),
     );
+    print("orders >> url >${_result.realUri} \ntoken >${token} \ndata>${_data} ");
     return value;
   }
 

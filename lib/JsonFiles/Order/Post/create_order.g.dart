@@ -7,6 +7,8 @@ part of 'create_order.dart';
 // **************************************************************************
 
 CreateOrder _$CreateOrderFromJson(Map<String, dynamic> json) {
+
+
   return CreateOrder(
     json['address_id'] as int,
     json['payment_method_slug'] as String,
@@ -22,8 +24,15 @@ CreateOrder _$CreateOrderFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$CreateOrderToJson(CreateOrder instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$CreateOrderToJson(CreateOrder instance) {
+  instance.products.forEach((element) {
+      print("createdWar >> ${element.toJson()}");
+      element.addons.forEach((element) {
+        print("createdWarDown >> ${element.toJson()}");
+      });
+  });
+
+  return    <String, dynamic>{
       'address_id': instance.address_id,
       'products': instance.products,
       'type': instance.type,
@@ -32,4 +41,4 @@ Map<String, dynamic> _$CreateOrderToJson(CreateOrder instance) =>
       'notes': instance.notes,
       'payment_method_slug': instance.payment_method_slug,
       'order_type': instance.order_type,
-    };
+    };}

@@ -6,6 +6,10 @@ import 'package:delivoo/HomeOrderAccount/Account/Bloc/WalletBloc/wallet_event.da
 import 'package:delivoo/HomeOrderAccount/Account/Bloc/WalletBloc/wallet_state.dart';
 import 'package:delivoo/JsonFiles/PaymentMethod/payment_method.dart';
 import 'package:delivoo/Locale/locales.dart';
+import 'package:delivoo/Payment/PaymentBloc/payment_bloc.dart';
+import 'package:delivoo/Payment/PaymentBloc/payment_event.dart';
+import 'package:delivoo/Payment/PaymentBloc/payment_state.dart';
+import 'package:delivoo/Payment/process_payment_page.dart';
 import 'package:delivoo/Themes/colors.dart';
 import 'package:delivoo/Themes/style.dart';
 import 'package:delivoo/UtilityFunctions/app_settings.dart';
@@ -28,10 +32,22 @@ class AddMoneyPage extends StatelessWidget {
                 .copyWith(fontWeight: FontWeight.w500)),
         titleSpacing: 0.0,
       ),
-      body: BlocProvider<WalletBloc>(
-        create: (context) => WalletBloc(),
-        child: AddMoneyBody(balance),
-      ),
+      body:
+
+          //  BlocProvider<WalletBloc>(
+          //   create: (context) => WalletBloc(),
+          //   child: AddMoneyBody(balance),
+          // ),
+
+          MultiBlocProvider(providers: [
+        BlocProvider<PaymentBloc>(
+          create: (BuildContext context) =>
+              PaymentBloc()..add(FetchPaymentEvent(["cod", "wallet"])),
+        ),
+        BlocProvider<WalletBloc>(
+          create: (BuildContext context) => WalletBloc(),
+        ),
+      ], child: AddMoneyBody(balance)),
     );
   }
 }
@@ -53,7 +69,7 @@ class _AddMoneyBodyState extends State<AddMoneyBody> {
   // TextEditingController _amountController =
   //     TextEditingController(text: '${AppSettings.currencyIcon} ');
   TextEditingController _amountController = TextEditingController();
-  PaymentMethod selectedValue;
+  PaymentMethod _selectedPaymentMethod;
   bool isLoaderShowing = false;
 
   @override
@@ -79,8 +95,26 @@ class _AddMoneyBodyState extends State<AddMoneyBody> {
             } else {
               dismissLoader();
             }
-            if (state is WalletRechargeState) {
-              Navigator.pop(context, state.paid);
+            if (state is WalletDepositState) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProcessPaymentPage(state.paymentData),
+                ),
+              ).then(
+                (value) {
+                  showToast(AppLocalizations.of(context).getTranslationOf(
+                      value is PaymentStatus && value.isPaid
+                          ? "payment_success"
+                          : "payment_fail"));
+                  Navigator.pop(
+                    context,
+                    value != null &&
+                        value is PaymentStatus &&
+                        value.isPaid == true,
+                  );
+                },
+              );
             }
           },
           child: Column(
@@ -181,48 +215,55 @@ class _AddMoneyBodyState extends State<AddMoneyBody> {
               //         .toUpperCase(),
               //   ),
               // ),
-              // BlocBuilder<PaymentBloc, PaymentState>(
-              //   builder: (context, state) {
-              //     if (state is SuccessPaymentState) {
-              //       return Padding(
-              //         padding: EdgeInsets.all(20.0),
-              //         child: DropdownButtonFormField(
-              //           hint: Text(AppLocalizations.of(context).selectPayment),
-              //           items: state.listOfPaymentMethods
-              //               .map((e) => DropdownMenuItem(
-              //                     child: Text(e.title),
-              //                     value: e,
-              //                   ))
-              //               .toList(),
-              //           value: selectedValue,
-              //           onChanged: (value) {
-              //             setState(() {
-              //               selectedValue = value;
-              //             });
-              //           },
-              //         ),
-              //       );
-              //     } else {
-              //       return SizedBox.shrink();
-              //     }
-              //   },
-              // ),
-              // Spacer(),
+              BlocBuilder<PaymentBloc, PaymentState>(
+                builder: (context, state) {
+                  if (state is SuccessPaymentState) {
+                    return Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: DropdownButtonFormField(
+                        hint: Text(AppLocalizations.of(context).selectPayment),
+                        items: state.listOfPaymentMethods
+                            .map((e) => DropdownMenuItem(
+                                  child: Text(e.title),
+                                  value: e,
+                                ))
+                            .toList(),
+                        value: _selectedPaymentMethod,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedPaymentMethod = value;
+                          });
+                        },
+                      ),
+                    );
+                  } else {
+                    return SizedBox.shrink();
+                  }
+                },
+              ),
+              Spacer(),
               BottomBar(
                 text: AppLocalizations.of(context).addMoney,
                 onTap: () async {
-                  if (_amountController.text != null &&
-                      _amountController.text.trim().isNotEmpty) {
-                    CardInfo cardInfo = await CardPicker.getSavedCard();
-                    CardPicker.pickCard(context, cardInfo, true).then((value) {
-                      if (value != null && value is CardInfo)
-                        BlocProvider.of<WalletBloc>(context).add(
-                            DepositWalletEvent(_amountController.text.trim(),
-                                "stripe", value));
-                    });
-                  } else {
+                  if (_amountController.text == null ||
+                      _amountController.text.trim().isEmpty) {
                     showToast(AppLocalizations.of(context)
                         .getTranslationOf("enter_amount"));
+                  } else if (_selectedPaymentMethod == null) {
+                    showToast(AppLocalizations.of(context)
+                        .getTranslationOf("selectPayment"));
+                  } else {
+                    CardInfo cardInfo;
+                    if (_selectedPaymentMethod.slug == "stripe") {
+                      cardInfo = await CardPicker.getSavedCard();
+                    }
+                    BlocProvider.of<WalletBloc>(context).add(
+                      DepositWalletEvent(
+                        _amountController.text.trim(),
+                        _selectedPaymentMethod,
+                        cardInfo,
+                      ),
+                    );
                   }
                 },
               ),

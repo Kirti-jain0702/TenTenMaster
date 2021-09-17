@@ -1,5 +1,5 @@
-import 'dart:convert';
 import 'dart:io';
+
 import 'package:delivoo/Components/bottom_bar.dart';
 import 'package:delivoo/Components/cached_image.dart';
 import 'package:delivoo/Components/entry_field.dart';
@@ -10,12 +10,12 @@ import 'package:delivoo/HomeOrderAccount/Account/Bloc/AccountBloc/account_state.
 import 'package:delivoo/JsonFiles/Auth/Responses/user_info.dart';
 import 'package:delivoo/Locale/locales.dart';
 import 'package:delivoo/Themes/colors.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uuid/uuid.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class ProfilePage extends StatelessWidget {
   ProfilePage();

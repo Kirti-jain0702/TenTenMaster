@@ -25,17 +25,17 @@ abstract class ProductClient {
   @GET('api/payment/stripe/{id}')
   Future<WalletPaymentResponse> payThroughStripe(
       @Path('id') int id, @Query('token') String stripeToken,
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
   @POST('api//user/wallet/deposit')
   Future<Payment> depositWallet(@Body() Map<String, String> map,
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
   @GET('api/orders/{id}')
   Future<OrderData> getOrderById(@Path('id') int orderId,
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
-  @GET('api/categories?parent=1')
+  @GET('api/categories?parent=1&scope=ecommerce')
   Future<ListCategories> getCategories();
 
   @GET('api/vendors/list')
@@ -52,37 +52,36 @@ abstract class ProductClient {
       @Query('vendor') int vendorId, @Query('category') int categoryId);
 
   @POST('api/orders')
-  Future<OrderData> postOrder(@Body() Map<String, dynamic> map,
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+  Future<OrderData> postOrder(@Body() Map<String, dynamic> map      ,{double price,@Header(Constants.authHeaderKey) String token});
 
   @GET('api/payment/wallet/{id}')
   Future<WalletPaymentResponse> payThroughWallet(@Path('id') int id,
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
   @GET('api/payment/methods')
   Future<List<PaymentMethod>> getPaymentMethods(
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
   @GET('api/payment/methods?type=prepaid')
   Future<List<PaymentMethod>> getPrepaidPaymentMethods([
-    @Header(HeaderKeys.authHeaderKey) String token,
+    @Header(Constants.authHeaderKey) String token,
   ]);
 
   @GET('api/orders?active=1')
   Future<BaseListResponse<OrderData>> getOrdersNew(@Query('page') int page,
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
   @GET('api/orders?past=1')
   Future<BaseListResponse<OrderData>> getOrdersPast(@Query('page') int page,
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
   @GET('api/user/wallet/balance')
   Future<WalletBalance> getBalance(
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
   @GET('api/user/wallet/transactions')
   Future<WalletTransactions> getTransactions(
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
   @GET('api/vendors/ratings/{id}')
   Future<RatingsList> getVendorReviews(@Path() int id);
@@ -93,5 +92,5 @@ abstract class ProductClient {
   @POST('api/vendors/ratings/{id}')
   Future<void> postReview(
       @Path('id') int vendorId, @Body() PostRating postRating,
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 }

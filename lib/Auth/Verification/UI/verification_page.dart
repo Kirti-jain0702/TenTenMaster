@@ -1,11 +1,8 @@
 import 'package:delivoo/Auth/Verification/cubit/verification_cubit.dart';
 import 'package:delivoo/Components/bottom_bar.dart';
 import 'package:delivoo/Components/entry_field.dart';
-import 'package:delivoo/Components/progress_loader.dart';
 import 'package:delivoo/Components/show_toast.dart';
 import 'package:delivoo/Locale/locales.dart';
-import 'package:delivoo/Themes/colors.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

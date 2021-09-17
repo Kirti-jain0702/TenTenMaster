@@ -1,3 +1,4 @@
+import 'package:delivoo/JsonFiles/PaymentMethod/payment_method.dart';
 import 'package:delivoo/UtilityFunctions/card_picker.dart';
 import 'package:equatable/equatable.dart';
 
@@ -13,13 +14,13 @@ class FetchWalletEvent extends WalletEvent {}
 
 class DepositWalletEvent extends WalletEvent {
   final String amount;
-  final String paymentMethodSlug;
+  final PaymentMethod paymentMethod;
   final CardInfo cardInfo;
 
-  DepositWalletEvent(this.amount, this.paymentMethodSlug, this.cardInfo);
+  DepositWalletEvent(this.amount, this.paymentMethod, this.cardInfo);
 
   @override
-  List<Object> get props => [amount, paymentMethodSlug, this.cardInfo];
+  List<Object> get props => [amount, paymentMethod, this.cardInfo];
 
   @override
   bool get stringify => true;

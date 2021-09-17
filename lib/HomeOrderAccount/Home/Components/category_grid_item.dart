@@ -22,11 +22,11 @@ class CategoryGridItem extends StatelessWidget {
           children: [
             Expanded(
               child: CachedImage(
-                category?.mediaUrls?.images?.first?.defaultImage,
+                category?.image_url,//category?.mediaUrls?.images?.first?.defaultImage,
                 fit: BoxFit.contain,
               ),
             ),
-            SizedBox(height: 6),
+            SizedBox(height: 16),
             Text(
               category.title.toUpperCase(),
               textAlign: TextAlign.center,

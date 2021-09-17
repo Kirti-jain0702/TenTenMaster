@@ -27,9 +27,6 @@ void main() async {
   await Firebase.initializeApp();
   Bloc.observer = SimpleBlocDelegate();
   await initOneSignal();
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.dark,
@@ -60,6 +57,7 @@ class Delivoo extends StatelessWidget {
         return BlocBuilder<LanguageCubit, Locale>(
           builder: (_, locale) {
             return MaterialApp(
+              debugShowCheckedModeBanner: false,
               localizationsDelegates: [
                 const AppLocalizationsDelegate(),
                 GlobalMaterialLocalizations.delegate,
@@ -69,7 +67,7 @@ class Delivoo extends StatelessWidget {
               supportedLocales: AppLocalizations.getSupportedLocales(),
               locale: locale,
               theme: theme,
-              home: BlocBuilder<SettingsBloc, SettingsState>(
+              home: /*AWSCheckScreen()*/BlocBuilder<SettingsBloc, SettingsState>(
                 builder: (context, state) {
                   if (state is SuccessSettingsState) {
                     return HomeOrderAccount(0);

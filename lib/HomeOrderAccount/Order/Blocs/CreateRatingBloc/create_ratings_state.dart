@@ -10,6 +10,8 @@ abstract class CreateRatingsState extends Equatable {
 
 class CreateRatingsInitial extends CreateRatingsState {}
 
+class CreateRatingsInProgress extends CreateRatingsState {}
+
 class CreateRatingsSuccess extends CreateRatingsState {}
 
 class CreateRatingsFailure extends CreateRatingsState {

@@ -21,7 +21,8 @@ class _OrderBodyState extends State<OrderPage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context).orderText,
+          title: Text(
+              AppLocalizations.of(context).getTranslationOf("my_account"),
               style: Theme.of(context).textTheme.bodyText1),
           centerTitle: true,
           bottom: TabBar(

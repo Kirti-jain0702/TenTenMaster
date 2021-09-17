@@ -8,7 +8,7 @@ class Payment {
   final int id;
   @JsonKey(name: 'payable_id')
   final int payableId;
-  final double amount;
+  double amount;
   final String status;
   @JsonKey(name: 'payment_method')
   final PaymentMethod paymentMethod;

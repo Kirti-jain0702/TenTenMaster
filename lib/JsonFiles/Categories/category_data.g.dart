@@ -11,6 +11,7 @@ CategoryData _$CategoryDataFromJson(Map json) {
     id: json['id'] as int,
     slug: json['slug'] as String,
     title: json['title'] as String,
+    image_url: json['image_url'] as String,
     dynamicMediaUrls: json['mediaurls'],
     parentId: json['parent_id'] as int,
   );
@@ -21,6 +22,7 @@ Map<String, dynamic> _$CategoryDataToJson(CategoryData instance) =>
       'id': instance.id,
       'slug': instance.slug,
       'title': instance.title,
+      'image_url': instance.image_url,
       'mediaurls': instance.dynamicMediaUrls,
       'parent_id': instance.parentId,
     };

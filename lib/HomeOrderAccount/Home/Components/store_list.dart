@@ -54,90 +54,89 @@ class StoreCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(4),
               child: CachedImage(
-                vendor.mediaUrls != null && vendor.mediaUrls.images != null
-                    ? vendor.mediaUrls.images?.first?.defaultImage
-                    : vendor.categories?.first?.mediaUrls?.images?.first
-                        ?.defaultImage,
+                vendor.getImage(),
                 height: 92,
                 width: 92,
               ),
             ),
             SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(vendor.name,
-                    style: Theme.of(context).textTheme.subtitle2.copyWith(
-                        color: Theme.of(context).secondaryHeaderColor)),
-                SizedBox(height: 8.0),
-                Row(
-                  children: <Widget>[
-                    Icon(
-                      Icons.location_on,
-                      color: kIconColor,
-                      size: 15,
-                    ),
-                    SizedBox(width: 6.0),
-                    Text(
-                        Helper.formatDistanceString((vendor?.distance ?? 0),
-                            AppSettings.distanceMetric),
-                        style: Theme.of(context)
-                            .textTheme
-                            .caption
-                            .copyWith(color: kLightTextColor, fontSize: 12.0)),
-                    Text(' | ',
-                        style: Theme.of(context)
-                            .textTheme
-                            .caption
-                            .copyWith(color: kMainColor, fontSize: 12.0)),
-                    Text(vendor.address.split(',').first ?? '',
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context)
-                            .textTheme
-                            .caption
-                            .copyWith(color: kLightTextColor, fontSize: 12.0)),
-                  ],
-                ),
-                SizedBox(height: 8),
-                Row(
-                  children: <Widget>[
-                    Icon(
-                      Icons.access_time,
-                      color: kIconColor,
-                      size: 15,
-                    ),
-                    SizedBox(width: 8.0),
-                    Text(
-                        AppLocalizations.of(context)
-                                .getTranslationOf('minimum') +
-                            ' ${vendor.getMeta()?.time ?? 30} ' +
-                            AppLocalizations.of(context)
-                                .getTranslationOf('mins'),
-                        style: Theme.of(context)
-                            .textTheme
-                            .caption
-                            .copyWith(color: kLightTextColor, fontSize: 12.0)),
-                  ],
-                ),
-                SizedBox(height: 8),
-                Row(
-                  children: <Widget>[
-                    Icon(Icons.star, color: kMainColor, size: 15),
-                    SizedBox(width: 8.0),
-                    Text(vendor.ratings.toStringAsFixed(1),
-                        style: Theme.of(context).textTheme.caption.copyWith(
-                            color: kMainColor,
-                            fontSize: 12.0,
-                            fontWeight: FontWeight.bold)),
-                    SizedBox(width: 8.0),
-                    Text(
-                        '${vendor.ratingsCount} ' +
-                            AppLocalizations.of(context)
-                                .getTranslationOf('reviews'),
-                        style: Theme.of(context).textTheme.overline),
-                  ],
-                ),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(vendor.name,
+                      style: Theme.of(context).textTheme.subtitle2.copyWith(
+                          color: Theme.of(context).secondaryHeaderColor)),
+                  SizedBox(height: 8.0),
+                  Row(
+                    children: <Widget>[
+                      Icon(
+                        Icons.location_on,
+                        color: kIconColor,
+                        size: 10,
+                      ),
+                      SizedBox(width: 10.0),
+                      Text(
+                          Helper.formatDistanceString((vendor?.distance ?? 0),
+                              AppSettings.distanceMetric),
+                          style: Theme.of(context)
+                              .textTheme
+                              .caption
+                              .copyWith(color: kLightTextColor, fontSize: 10.0)),
+                      Text('| ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .caption
+                              .copyWith(color: kMainColor, fontSize: 10.0)),
+                      Text(vendor.address.split(',').first ?? '',
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context)
+                              .textTheme
+                              .caption
+                              .copyWith(color: kLightTextColor, fontSize: 10.0)),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: <Widget>[
+                      Icon(
+                        Icons.access_time,
+                        color: kIconColor,
+                        size: 10,
+                      ),
+                      SizedBox(width: 10.0),
+                      Text(
+                          AppLocalizations.of(context)
+                                  .getTranslationOf('minimum') +
+                              ' ${vendor.getMeta()?.time ?? 30} ' +
+                              AppLocalizations.of(context)
+                                  .getTranslationOf('mins'),
+                          style: Theme.of(context)
+                              .textTheme
+                              .caption
+                              .copyWith(color: kLightTextColor, fontSize: 10.0)),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: <Widget>[
+                      Icon(Icons.star, color: kMainColor, size: 10),
+                      SizedBox(width: 10.0),
+                      Text(vendor.ratings.toStringAsFixed(1),
+                          style: Theme.of(context).textTheme.caption.copyWith(
+                              color: kMainColor,
+                              fontSize: 10.0,
+                              fontWeight: FontWeight.bold)),
+                      SizedBox(width: 8.0),
+                      Text(
+                          '${vendor.ratingsCount} ' +
+                              AppLocalizations.of(context)
+                                  .getTranslationOf('reviews'),
+                          style: Theme.of(context).textTheme.overline),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),

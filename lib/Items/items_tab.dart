@@ -1,10 +1,12 @@
+import 'package:animation_wrappers/Animations/faded_slide_animation.dart';
+import 'package:delivoo/Cart/view_cart.dart';
 import 'package:delivoo/Components/bottom_bar.dart';
 import 'package:delivoo/Components/cached_image.dart';
 import 'package:delivoo/HomeOrderAccount/Home/Bloc/CartQuantityBloc/cart_quantity_bloc.dart';
 import 'package:delivoo/HomeOrderAccount/Home/Bloc/CartQuantityBloc/cart_quantity_event.dart';
+import 'package:delivoo/JsonFiles/Products/addon_choices.dart';
 import 'package:delivoo/JsonFiles/Products/product_data.dart';
 import 'package:delivoo/Locale/locales.dart';
-import 'package:delivoo/Routes/routes.dart';
 import 'package:delivoo/Themes/colors.dart';
 import 'package:delivoo/UtilityFunctions/app_settings.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,7 @@ import 'Bloc/items_bloc.dart';
 import 'Bloc/items_event.dart';
 import 'Bloc/items_state.dart';
 
+//List<String> list = ['1 kg', '500 g', '250 g'];
 List<ProductData> cartProducts = [];
 
 class ItemsTab extends StatelessWidget {
@@ -23,7 +26,10 @@ class ItemsTab extends StatelessWidget {
   final int categoryId;
   final String vendorName;
 
-  ItemsTab(this.vendorId, this.categoryId, this.vendorName);
+  //final List<AddOnChoices> addOnChoices;
+
+  ItemsTab(this.vendorId, this.categoryId, this.vendorName
+      /*, this.addOnChoices*/);
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +50,8 @@ class ItemsTabBody extends StatefulWidget {
 }
 
 class _ItemsTabBodyState extends State<ItemsTabBody> {
+  //var _itemValue = list[0];
+
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<CartQuantityBloc>(context).add(GetCartQuantityEvent());
@@ -94,15 +102,21 @@ class _ItemsTabBodyState extends State<ItemsTabBody> {
                               ).then((value) {
                                 if (value != null) {
                                   if (value == "increment") {
-                                    addProductConfirm(product);
+                                    if (product.quantity == 0) {
+                                      addProductConfirm(product);
+                                    } else {
+                                      product.quantity++;
+                                    }
+                                    /**/
+
                                   } else if (value == "decrement") {
                                     product.quantity--;
                                     if (product.quantity < 1) {
                                       cartProducts.removeWhere((element) =>
                                           element.id == product.id);
                                     }
-                                    setState(() {});
                                   }
+                                  setState(() {});
                                 }
                               });
                             },
@@ -134,7 +148,100 @@ class _ItemsTabBodyState extends State<ItemsTabBody> {
                                               product.price.toStringAsFixed(2),
                                           style: theme.textTheme.caption),
                                       Spacer(),
-                                      SizedBox(height: 6),
+                                      GestureDetector(
+                                        onTap: () {
+                                          showModalBottomSheet(
+                                              context: context,
+                                              builder: (context) =>
+                                                  BottomSheetCount(
+                                                    selectedItem:
+                                                        product.selectedKey,
+                                                    onChangeValue: (val) {
+                                                      setState(() {
+                                                        product.selectedKey =
+                                                            val;
+
+                                                        product.price = product
+                                                            .addOnGroups[0]
+                                                            .addOnChoices
+                                                            .firstWhere(
+                                                                (element) =>
+                                                                    element
+                                                                        .title ==
+                                                                    val)
+                                                            .price;
+                                                        if (product.quantity ==
+                                                            0) {
+                                                          addProductConfirm(
+                                                              product);
+                                                        }
+                                                        product.addOnGroups
+                                                            .first.addOnChoices
+                                                            .forEach((e) {
+                                                          if (val == e.title) {
+                                                            e.selected = true;
+                                                            print(e.title);
+                                                          } else {
+                                                            e.selected = false;
+                                                          }
+                                                        });
+                                                        getTotal();
+                                                      });
+                                                    },
+                                                    choicesList: product
+                                                        .addOnGroups[0]
+                                                        .addOnChoices,
+                                                  ));
+                                        },
+                                        child: product.addOnGroups.length > 0
+                                            ? Container(
+                                                margin:
+                                                    EdgeInsets.only(left: 6),
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 4, horizontal: 6),
+                                                decoration: BoxDecoration(
+                                                    color: Color(0xfff8f9fd),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20)),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    SizedBox(
+                                                      width: 8,
+                                                    ),
+                                                    Text(
+                                                        product.selectedKey ==
+                                                                    null ||
+                                                                product.selectedKey ==
+                                                                    ''
+                                                            ? product
+                                                                .addOnGroups[0]
+                                                                .addOnChoices[0]
+                                                                .title
+                                                            : product
+                                                                .selectedKey,
+                                                        style: theme
+                                                            .textTheme.caption
+                                                            .copyWith(
+                                                                fontSize: 12)),
+                                                    SizedBox(
+                                                      width: 4,
+                                                    ),
+                                                    Icon(
+                                                      Icons.keyboard_arrow_down,
+                                                      color: kMainColor,
+                                                      size: 20,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 4,
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            : SizedBox(),
+                                      )
                                     ],
                                   ),
                                 ),
@@ -143,19 +250,37 @@ class _ItemsTabBodyState extends State<ItemsTabBody> {
                           ),
                           if (product.quantity == 0)
                             PositionedDirectional(
-                              bottom: 30,
+                              top: 0,
+                              bottom: 0,
                               end: 10,
-                              child: Container(
-                                height: 35.0,
-                                child: FlatButton(
-                                  child: Text(
-                                    AppLocalizations.of(context).add,
-                                    style: theme.textTheme.caption.copyWith(
-                                        color: theme.primaryColor,
-                                        fontWeight: FontWeight.bold),
+                              child: Center(
+                                child: SizedBox(
+                                  height: 35.0,
+                                  child: FlatButton(
+                                    child: Text(
+                                      AppLocalizations.of(context).add,
+                                      style: theme.textTheme.caption.copyWith(
+                                          color: theme.primaryColor,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    textTheme: ButtonTextTheme.accent,
+                                    onPressed: ()
+                                    {
+
+                                      if (product.addOnGroups!=null&&product.addOnGroups.length>0&&product.quantity == 0){
+                                        print("goodToKNow >> ${product.addOnGroups.first.addOnChoices.length}");
+                                        product.addOnGroups.first.addOnChoices
+                                            .asMap()
+                                            .forEach((i, e) {
+                                          if (i == 0) {
+                                            e.selected = true;
+                                            print(e.title);
+                                          } else {
+                                            e.selected = false;
+                                          }
+                                        });}
+                                      addProductConfirm(product);},
                                   ),
-                                  textTheme: ButtonTextTheme.accent,
-                                  onPressed: () => addProductConfirm(product),
                                 ),
                               ),
                             )
@@ -193,9 +318,11 @@ class _ItemsTabBodyState extends State<ItemsTabBody> {
                                     SizedBox(width: 8.0),
                                     InkWell(
                                       onTap: () {
+
                                         product.quantity++;
                                         cartProducts.removeWhere((element) =>
                                             element.id == product.id);
+
                                         cartProducts.add(product);
                                         setState(() {});
                                       },
@@ -231,7 +358,7 @@ class _ItemsTabBodyState extends State<ItemsTabBody> {
                                 '${cartProducts.length} ' +
                                     AppLocalizations.of(context)
                                         .getTranslationOf('items') +
-                                    '  |  ${AppSettings.currencyIcon} ${getTotal().toStringAsFixed(2)}',
+                                    ' | ${AppSettings.currencyIcon} ${getTotal().toStringAsFixed(2)}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .subtitle1
@@ -245,9 +372,12 @@ class _ItemsTabBodyState extends State<ItemsTabBody> {
                                       await SharedPreferences.getInstance();
                                   await prefs.setString(
                                       'vendorName', widget.vendorName);
-                                  Navigator.pushNamed(
-                                          context, PageRoutes.checkout)
-                                      .then((value) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ViewCart(
+                                            () => Navigator.pop(context)),
+                                      )).then((value) {
                                     setState(() {});
                                   });
                                 },
@@ -461,6 +591,91 @@ class BottomSheetWidget extends StatelessWidget {
             onTap: () => Navigator.pop(context),
             text: AppLocalizations.of(context).close)
       ],
+    );
+  }
+}
+
+class BottomSheetCount extends StatefulWidget {
+  String selectedItem;
+  Function(String) onChangeValue;
+  List<AddOnChoices> choicesList;
+
+  BottomSheetCount(
+      {Key key,
+      @required this.selectedItem,
+      @required this.onChangeValue,
+      @required this.choicesList})
+      : super(key: key);
+
+  @override
+  _BottomSheetCountState createState() => _BottomSheetCountState();
+}
+
+class _BottomSheetCountState extends State<BottomSheetCount> {
+  @override
+  Widget build(BuildContext context) {
+    return FadedSlideAnimation(
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Container(
+            height: 100.7,
+            color: Theme.of(context).cardColor,
+            padding: EdgeInsets.all(15.0),
+            child: ListTile(
+              title: Text(AppLocalizations.of(context).onion,
+                  style: Theme.of(context)
+                      .textTheme
+                      .caption
+                      .copyWith(fontSize: 15, fontWeight: FontWeight.w500)),
+              subtitle: Text(AppLocalizations.of(context).vegetable,
+                  style: Theme.of(context)
+                      .textTheme
+                      .caption
+                      .copyWith(fontSize: 15)),
+              trailing: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                ),
+                onPressed: () {
+                  widget.onChangeValue.call(widget.selectedItem);
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  AppLocalizations.of(context).add,
+                  style: Theme.of(context)
+                      .textTheme
+                      .caption
+                      .copyWith(color: kMainColor, fontWeight: FontWeight.bold),
+                ),
+                // textTheme: ButtonTextTheme.accent,
+              ),
+            ),
+          ),
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: widget.choicesList.length,
+            itemBuilder: (context, index) {
+              return RadioListTile(
+                  title: Text(widget.choicesList[index].title),
+                  value: widget.choicesList[index].title,
+                  groupValue:
+                      widget.selectedItem == null || widget.selectedItem == ""
+                          ? widget.choicesList[0].title
+                          : widget.selectedItem,
+                  onChanged: (value) {
+                    print("value >> $value");
+                    setState(() {
+                      widget.selectedItem = widget.choicesList[index].title;
+                    });
+                  });
+            },
+          ),
+        ],
+      ),
+      beginOffset: Offset(0, 0.3),
+      endOffset: Offset(0, 0),
+      slideCurve: Curves.linearToEaseOut,
     );
   }
 }

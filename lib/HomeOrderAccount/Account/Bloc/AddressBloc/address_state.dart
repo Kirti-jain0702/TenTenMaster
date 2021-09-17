@@ -40,11 +40,12 @@ class GetSelectedAddressFailureState extends AddressState {
 
 class FailureAddressState extends AddressState {
   final e;
+  final int errorCode;
 
-  FailureAddressState(this.e);
+  FailureAddressState(this.e, this.errorCode);
 
   @override
-  List<Object> get props => [e];
+  List<Object> get props => [e, errorCode];
 }
 
 class DeletingAddressState extends AddressState {}

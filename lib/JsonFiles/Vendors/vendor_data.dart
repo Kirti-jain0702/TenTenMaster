@@ -95,4 +95,10 @@ class Vendor {
         ? ListImage.fromJson(dynamicMediaUrls)
         : null;
   }
+
+  String getImage() {
+    return mediaUrls != null && mediaUrls.images != null
+        ? mediaUrls.images?.first?.defaultImage
+        : categories?.first?.mediaUrls?.images?.first?.defaultImage;
+  }
 }

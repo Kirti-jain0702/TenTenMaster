@@ -183,14 +183,6 @@ class AppLocalizations {
     return getTranslationOf("continueText");
   }
 
-  String get account {
-    return getTranslationOf("account");
-  }
-
-  String get orderText {
-    return getTranslationOf("orderText");
-  }
-
   String get tnc {
     return getTranslationOf("tnc");
   }
@@ -405,14 +397,6 @@ class AppLocalizations {
 
   String get viewCart {
     return getTranslationOf("viewCart");
-  }
-
-  String get placed {
-    return getTranslationOf("placed");
-  }
-
-  String get thanks {
-    return getTranslationOf("thanks");
   }
 
   String get confirm {
@@ -737,6 +721,18 @@ class AppLocalizations {
 
   String get lightMode {
     return getTranslationOf("lightMode");
+  }
+
+  String get cancel {
+    return getTranslationOf("cancel");
+  }
+
+  String get demo_login_title {
+    return getTranslationOf("demo_login_title");
+  }
+
+  String get demo_login_message {
+    return getTranslationOf("demo_login_message");
   }
 }
 

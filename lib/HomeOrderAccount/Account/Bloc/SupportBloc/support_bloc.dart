@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class SupportBloc extends Bloc<SupportEvent, SupportState> {
   AuthRepo _repository = AuthRepo();
 
-  SupportBloc() : super(LoadingSupportState());
+  SupportBloc() : super(InitialSupportState());
 
   @override
   Stream<SupportState> mapEventToState(SupportEvent event) async* {

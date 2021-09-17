@@ -9,7 +9,6 @@ part of 'auth_client.dart';
 class _AuthClient implements AuthClient {
   _AuthClient(this._dio, {this.baseUrl}) {
     ArgumentError.checkNotNull(_dio, '_dio');
-    /* baseUrl ??= 'https://www.yourapibase.com/'; */
     baseUrl ??= 'https://admin.tentenecom.com/';
   }
 

@@ -2,6 +2,7 @@ import 'package:delivoo/AppConfig/app_config.dart';
 import 'package:delivoo/Cart/coupon.dart';
 import 'package:delivoo/Constants/constants.dart';
 import 'package:delivoo/JsonFiles/Address/getaddress_json.dart';
+import 'package:delivoo/JsonFiles/Banner/Banner.dart';
 import 'package:delivoo/JsonFiles/CustomDelivery/custom_delivery.dart';
 import 'package:delivoo/JsonFiles/CustomDelivery/delivery_fee.dart';
 import 'package:delivoo/JsonFiles/Order/Get/order_data.dart';
@@ -17,18 +18,23 @@ part 'home_client.g.dart';
 abstract class HomeClient {
   factory HomeClient(Dio dio, {String baseUrl}) = _HomeClient;
 
+
+  @GET('api/banners')
+  Future<BannerData> getBanners();
+
+
   @GET('api/addresses')
   Future<List<GetAddress>> getAddresses(
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
   @POST('api/addresses')
   Future<GetAddress> addressAdd(@Body() Map<String, String> map,
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
   @PUT('api/addresses/{addressId}')
   Future<GetAddress> addressUpdate(
       @Path() String addressId, @Body() Map<String, String> map,
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
   @GET('api/vendors/list')
   Future<BaseListResponse<Vendor>> searchVendors(@Query('search') String text,
@@ -49,21 +55,21 @@ abstract class HomeClient {
 
   @GET('api/orders/calculate-delivery-fee?order_type=CUSTOM')
   Future<DeliveryFee> getDeliveryFee(
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
   @POST('api/orders')
   Future<OrderData> postCustomOrder(@Body() CustomDelivery customDelivery,
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
   @DELETE('api/addresses/{addressId}')
   Future<OrderData> deleteAddress(@Path('addressId') int id,
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
   @GET('api/coupons')
   Future<List<Coupon>> getCoupons(
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 
   @GET('api/coupons/check-validity')
   Future<Coupon> checkCouponValidity(@Query('code') String couponCode,
-      [@Header(HeaderKeys.authHeaderKey) String token]);
+      [@Header(Constants.authHeaderKey) String token]);
 }

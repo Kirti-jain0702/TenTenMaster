@@ -7,30 +7,35 @@ part of 'product_data.dart';
 // **************************************************************************
 
 ProductData _$ProductDataFromJson(Map json) {
+  var addOnGroups= (json['addon_groups'] as List)
+      ?.map((e) => e == null
+      ? null
+      : AddOnGroups.fromJson((e as Map)?.map(
+        (k, e) => MapEntry(k as String, e),
+  )))
+      ?.toList();
+/*  var sd=addOnGroups;
+  print("matcha goes >> ${sd[0].addOnChoices[0].title}");*/
   return ProductData(
     json['id'] as int,
     json['title'] as String,
     json['detail'] as String,
     json['meta'],
-    (json['price'] as num)?.toDouble(),
+    addOnGroups!=null&&addOnGroups.length>0?addOnGroups[0].addOnChoices[0].price.toDouble():(json['price'] as num)?.toDouble(),
     json['owner'] as String,
     json['parent_id'] as int,
     json['attribute_term_id'] as int,
     json['created_at'] as String,
     json['updated_at'] as String,
-    (json['addon_groups'] as List)
-        ?.map((e) => e == null
-            ? null
-            : AddOnGroups.fromJson((e as Map)?.map(
-                (k, e) => MapEntry(k as String, e),
-              )))
-        ?.toList(),
+    addOnGroups ,
+    //addOnGroups[0].addOnChoices[0].title,
     (json['categories'] as List)
         ?.map((e) => e == null ? null : CategoryData.fromJson(e as Map))
         ?.toList(),
     (json['vendor_products'] as List)
         ?.map((e) => e == null ? null : VendorProduct.fromJson(e as Map))
         ?.toList(),
+
     json['mediaurls'],
     (json['ratings'] as num)?.toDouble(),
     json['ratings_count'] as int,

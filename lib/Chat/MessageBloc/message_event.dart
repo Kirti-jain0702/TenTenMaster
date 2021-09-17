@@ -8,13 +8,13 @@ class MessageEvent extends Equatable {
   bool get stringify => true;
 }
 
-class MessageSentEvent extends MessageEvent {
-  final Message message;
+class MessageSendEvent extends MessageEvent {
+  final String messageBody;
 
-  MessageSentEvent(this.message);
+  MessageSendEvent(this.messageBody);
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [messageBody];
 }
 
 class ShowMessagesEvent extends MessageEvent {}

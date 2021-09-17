@@ -9,6 +9,7 @@ import 'package:delivoo/Components/custom_dialog.dart';
 import 'package:delivoo/Components/entry_field.dart';
 import 'package:delivoo/Components/show_toast.dart';
 import 'package:delivoo/JsonFiles/Address/getaddress_json.dart';
+import 'package:delivoo/Locale/language_cubit.dart';
 import 'package:delivoo/Locale/locales.dart';
 import 'package:delivoo/Maps/Bloc/map_bloc.dart';
 import 'package:delivoo/Maps/Bloc/map_event.dart';
@@ -17,14 +18,17 @@ import 'package:delivoo/Maps/Components/address_type_button.dart';
 import 'package:delivoo/Maps/location_selected.dart';
 import 'package:delivoo/Maps/map_repository.dart';
 import 'package:delivoo/Themes/colors.dart';
+import 'package:delivoo/UtilityFunctions/search_places/search_map_place.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
+//import 'package:search_map_place/search_map_place.dart';
 
 TextEditingController _addressController = TextEditingController();
 
@@ -57,17 +61,34 @@ class SetLocation extends StatefulWidget {
 class _SetLocationState extends State<SetLocation> {
   bool isLoaderShowing = false;
   MapBloc _mapBloc;
+  LanguageCubit _languageCubit;
+  String defLang;
 
   Completer<GoogleMapController> _controller = Completer();
 
   bool isCard = false;
-
+  static const platform = MethodChannel('localeChange');
+/*  Future<String> getStatus(String locale) async {
+    await platform.invokeMethod("locale",{"lang":locale});
+  }*/
   @override
   void initState() {
     super.initState();
     _mapBloc = BlocProvider.of<MapBloc>(context);
+    _languageCubit = BlocProvider.of<LanguageCubit>(context);
+  //  getStatus("zh_CN");
+   // getStatus("zh_CN");
+/*    _languageCubit.getCurrentLanguageVal().then((value) {
+      defLang = value;
+      _languageCubit.setCurrentLanguage("ta", true);
+    });*/
   }
-
+  @override
+  void dispose() {
+ //   getStatus("en");
+   // _languageCubit.setCurrentLanguage(defLang, true);
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return BlocListener<MapBloc, MapState>(
@@ -102,107 +123,130 @@ class _SetLocationState extends State<SetLocation> {
       child: BlocBuilder<MapBloc, MapState>(builder: (context, state) {
         return Scaffold(
 //          extendBodyBehindAppBar: true,
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(126.0),
-            child: CustomAppBar(
-              titleWidget: Text(
-                AppLocalizations.of(context).setLocation,
-                style: TextStyle(fontSize: 16.7),
-              ),
-              onTap: () => getPredictions(),
-              hint: AppLocalizations.of(context).enterLocation,
+          appBar: AppBar(
+            title: Text(
+              AppLocalizations.of(context).setLocation,
+              style: TextStyle(fontSize: 16.7),
             ),
           ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              SizedBox(
-                height: 8.0,
-              ),
-              Expanded(
-                child: Stack(
-                  children: <Widget>[
-                    GoogleMap(
-                      initialCameraPosition:
-                          CameraPosition(target: state.latLng, zoom: 16.0),
-                      onCameraMove: state.toAnimateCamera ? null : onCameraMove,
-                      mapType: MapType.normal,
-                      myLocationEnabled: true,
-                      zoomControlsEnabled: false,
-                      onMapCreated: (GoogleMapController controller) async {
-                        String mapStyle = await MapRepository().loadSilverMap();
-                        await controller.setMapStyle(mapStyle);
-                        _controller.complete(controller);
-                      },
-                    ),
-                    Align(
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: 36.0),
-                          child: Image.asset(
-                            'images/map_pin.png',
-                            height: 36,
-                          ),
-                        ))
-                  ],
-                ),
-              ),
-              Container(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                child: Row(
-                  children: <Widget>[
-                    Image.asset('images/map_pin.png', scale: 2.5),
-                    SizedBox(width: 16.0),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => getPredictions(),
-                        child: Text(
-                          state.formattedAddress,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.caption,
+          body: Stack(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  Expanded(
+                    child: Stack(
+                      children: <Widget>[
+                        GoogleMap(
+                          initialCameraPosition:
+                              CameraPosition(target: state.latLng, zoom: 16.0),
+                          onCameraMove:
+                              state.toAnimateCamera ? null : onCameraMove,
+                          mapType: MapType.normal,
+                          myLocationEnabled: true,
+                          zoomControlsEnabled: false,
+                          onMapCreated: (GoogleMapController controller) async {
+                            /* String mapStyle = await MapRepository().loadSilverMap();
+                            await controller.setMapStyle(mapStyle);*/
+                            _controller.complete(controller);
+                          },
                         ),
-                      ),
+                        Align(
+                            alignment: Alignment.center,
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 36.0),
+                              child: Image.asset(
+                                'images/map_pin.png',
+                                height: 36,
+                              ),
+                            ))
+                      ],
                     ),
-                  ],
+                  ),
+                  Container(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Row(
+                      children: <Widget>[
+                        Image.asset('images/map_pin.png', scale: 2.5),
+                        SizedBox(width: 16.0),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () => getPredictions(),
+                            child: Text(
+                              state.formattedAddress,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.caption,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  state.isCardShowing
+                      ? SaveAddressCard(widget.address)
+                      : Container(),
+                  BottomBar(
+                      text: AppLocalizations.of(context).continueText,
+                      onTap: () {
+                        if (widget.pickOnly) {
+                          _mapBloc.add(LocationSelectionOutEvent(false,
+                              state.latLng.longitude, state.latLng.latitude));
+                        } else {
+                          if (widget.address == null) {
+                            widget.address = GetAddress.newAddress(
+                                state.formattedAddress,
+                                state.latLng.longitude,
+                                state.latLng.latitude);
+                          }
+                          if (BlocProvider.of<AuthBloc>(context).state
+                              is Authenticated) {
+                            if (!state.isCardShowing) {
+                              _addressController.text = state.formattedAddress;
+                              _mapBloc.add(ShowCardEvent());
+                            } else {
+                              _mapBloc.add(
+                                AddressSubmittedEvent(
+                                    widget.address != null
+                                        ? widget.address.id
+                                        : -1,
+                                    widget.address.title,
+                                    _addressController.text,
+                                    state.latLng.longitude,
+                                    state.latLng.latitude),
+                              );
+                            }
+                          } else {
+                            showCustomDialog(context);
+                          }
+                        }
+                      }),
+                ],
+              ),
+              Positioned(
+                top: 30,
+                right: 10,
+                left: 10,
+                child: SearchMapPlaceWidget(
+                  hasClearButton: true,
+                  placeholder: 'Enter Address',
+                  contextTop: context,
+                  placeType: PlaceType.address,
+                  apiKey: 'AIzaSyCgxYlKYfp8dz8JgW5UxIEX--aI8YlPxDw',
+                  onSelected: (Place place) async {
+                    Geolocation geolocation = await place.geolocation;
+                    var controller = await _controller.future;
+                    controller.animateCamera(
+                        CameraUpdate.newLatLng(geolocation.coordinates));
+                    controller.animateCamera(
+                        CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
+                  },
                 ),
               ),
-              state.isCardShowing
-                  ? SaveAddressCard(widget.address)
-                  : Container(),
-              BottomBar(
-                  text: AppLocalizations.of(context).continueText,
-                  onTap: () {
-                    if (widget.pickOnly) {
-                      _mapBloc.add(LocationSelectionOutEvent(false,
-                          state.latLng.longitude, state.latLng.latitude));
-                    } else {
-                      if (widget.address == null) {
-                        widget.address = GetAddress.newAddress(
-                            state.formattedAddress,
-                            state.latLng.longitude,
-                            state.latLng.latitude);
-                      }
-                      if (BlocProvider.of<AuthBloc>(context).state
-                          is Authenticated) {
-                        if (!state.isCardShowing) {
-                          _addressController.text = state.formattedAddress;
-                          _mapBloc.add(ShowCardEvent());
-                        } else {
-                          _mapBloc.add(
-                            AddressSubmittedEvent(
-                                widget.address != null ? widget.address.id : -1,
-                                widget.address.title,
-                                _addressController.text,
-                                state.latLng.longitude,
-                                state.latLng.latitude),
-                          );
-                        }
-                      } else {
-                        showCustomDialog(context);
-                      }
-                    }
-                  }),
             ],
           ),
         );
@@ -258,7 +302,9 @@ class _SetLocationState extends State<SetLocation> {
 
 class SaveAddressCard extends StatefulWidget {
   GetAddress address;
+
   SaveAddressCard(this.address);
+
   @override
   _SaveAddressCardState createState() => _SaveAddressCardState();
 }
@@ -327,4 +373,5 @@ class _SaveAddressCardState extends State<SaveAddressCard> {
       ],
     );
   }
+
 }

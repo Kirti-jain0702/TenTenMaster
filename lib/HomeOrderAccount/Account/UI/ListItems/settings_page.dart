@@ -135,7 +135,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   selectedLocale = locale.languageCode;
                 return ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: AppConfig.languagesSupported.length,
+                  itemCount: AppConfig.languagesSupported.length-1,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     return RadioListTile(

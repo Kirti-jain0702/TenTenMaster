@@ -14,7 +14,7 @@ class ProductData {
   final String title;
   final String detail;
   final dynamic meta;
-  final double price;
+  double price;
   final String owner;
   @JsonKey(name: 'parent_id')
   final int parentId;
@@ -45,6 +45,11 @@ class ProductData {
   @JsonKey(ignore: true)
   int quantity = 0;
 
+  @JsonKey(ignore: true)
+  String selectedKey = "";
+
+
+
   ProductData(
     this.id,
     this.title,
@@ -57,6 +62,7 @@ class ProductData {
     this.createdAt,
     this.updatedAt,
     this.addOnGroups,
+   //   this.selectedKey,
     this.categories,
     this.vendorProducts,
     this.dynamicMediaUrls,

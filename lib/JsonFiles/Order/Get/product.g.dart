@@ -8,12 +8,12 @@ part of 'product.dart';
 
 Product _$ProductFromJson(Map json) {
   return Product(
-    id: json['id'] as int,
-    quantity: json['quantity'] as int,
-    total: (json['total'] as num)?.toDouble(),
-    subtotal: (json['subtotal'] as num)?.toDouble(),
-    orderId: json['order_id'] as int,
-    vendorProductId: json['vendor_product_id'] as int,
+    id: json['id']==null ?0.0: json['id'] as int,
+    quantity: json['quantity']==null ?0.0: json['quantity'] as int,
+    total: json['total']==null ?0.0:(json['total'] as num)?.toDouble(),
+    subtotal:json['subtotal']==null ?0.0:  (json['subtotal'] as num)?.toDouble(),
+    orderId: json['order_id']==null ?0:json['order_id'] as int,
+    vendorProductId:json['vendor_product_id'] == null?0: json['vendor_product_id'] as int,
     vendorProduct: json['vendor_product'] == null
         ? null
         : VendorProduct.fromJson(json['vendor_product'] as Map),

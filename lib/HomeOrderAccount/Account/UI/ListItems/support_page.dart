@@ -5,6 +5,7 @@ import 'package:delivoo/HomeOrderAccount/Account/Bloc/SupportBloc/support_bloc.d
 import 'package:delivoo/HomeOrderAccount/Account/Bloc/SupportBloc/support_event.dart';
 import 'package:delivoo/HomeOrderAccount/Account/Bloc/SupportBloc/support_state.dart';
 import 'package:delivoo/Locale/locales.dart';
+import 'package:delivoo/Themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,6 +29,7 @@ class _SupportBodyState extends State<SupportBody> {
   TextEditingController _controller = TextEditingController();
 
   SupportBloc _supportBloc;
+  bool isLoaderShowing = false;
 
   @override
   void initState() {
@@ -39,6 +41,11 @@ class _SupportBodyState extends State<SupportBody> {
   Widget build(BuildContext context) {
     return BlocListener<SupportBloc, SupportState>(
       listener: (context, state) {
+        if (state is LoadingSupportState) {
+          showLoader();
+        } else {
+          dismissLoader();
+        }
         if (state is SuccessSupportState) {
           showToast(AppLocalizations.of(context)
               .getTranslationOf('support_has_been_submitted'));
@@ -60,7 +67,7 @@ class _SupportBodyState extends State<SupportBody> {
                 children: <Widget>[
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 48.0),
-                    color: Theme.of(context).cardColor,
+                    color: kCardBackgroundColor,
                     child: Image(
                       image: AssetImage("images/logos/logo_user.png"),
                       height: 130.0,
@@ -98,19 +105,51 @@ class _SupportBodyState extends State<SupportBody> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 300,),
+                  SizedBox(
+                    height: 300,
+                  ),
                 ],
               ),
             ),
             BottomBar(
               text: AppLocalizations.of(context).submit,
-              onTap: _controller.text != ''
-                  ? () => _supportBloc.add(SupportEvent(_controller.text))
-                  : null,
+              onTap: () {
+                if (_controller.text.trim().length < 10 ||
+                    _controller.text.trim().length > 140) {
+                  showToast(AppLocalizations.of(context)
+                      .getTranslationOf("invalid_length_message"));
+                } else {
+                  _supportBloc.add(SupportEvent(_controller.text));
+                }
+              },
             ),
           ],
         ),
       ),
     );
+  }
+
+  showLoader() {
+    if (!isLoaderShowing) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        useRootNavigator: false,
+        builder: (BuildContext context) {
+          return Center(
+              child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation(kMainColor),
+          ));
+        },
+      );
+      isLoaderShowing = true;
+    }
+  }
+
+  dismissLoader() {
+    if (isLoaderShowing) {
+      Navigator.of(context).pop();
+      isLoaderShowing = false;
+    }
   }
 }

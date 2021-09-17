@@ -54,6 +54,8 @@ class ProductRepository {
     return client.getCategories();
   }
 
+
+
   Future<BaseListResponse<Vendor>> listOfVendors(
       int id, double latitude, double longitude, int page) {
     return client.getVendors(id, longitude, latitude, page);
@@ -64,10 +66,13 @@ class ProductRepository {
     return client.getProducts(vendorId, categoryId);
   }
 
-  Future<OrderData> postOrder(CreateOrder createOrderRequest) async {
+  Future<OrderData> postOrder(CreateOrder createOrderRequest, {double price}) async {
+
     Map<String, dynamic> cor = createOrderRequest.toJson();
     cor.removeWhere((key, value) => value == null);
-    return client.postOrder(cor);
+
+    print("hereErrorTrible ");
+    return client.postOrder(cor,price: price);
   }
 
   Future<WalletPaymentResponse> payThroughWallet(int id) async {
@@ -128,5 +133,13 @@ class ProductRepository {
 
   Future<void> postReview(int id, PostRating postRating) {
     return client.postReview(id, postRating);
+  }
+
+  Future<void> postUrl(String url) {
+    return dio.post(url, data: {});
+  }
+
+  Future<void> getUrl(String url) {
+    return dio.get(url);
   }
 }

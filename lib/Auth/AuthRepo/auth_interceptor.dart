@@ -6,17 +6,17 @@ class AuthInterceptor extends Interceptor {
   SharedPreferences prefs;
   @override
   Future onRequest(RequestOptions options) async {
-    final hasAuthHeader = options.headers.containsKey(HeaderKeys.authHeaderKey);
+    final hasAuthHeader = options.headers.containsKey(Constants.authHeaderKey);
     final hasNoAuthHeader =
-        options.headers.containsKey(HeaderKeys.noAuthHeaderKey);
+        options.headers.containsKey(Constants.noAuthHeaderKey);
     if (hasNoAuthHeader) {
-      options.headers.remove(HeaderKeys.authHeaderKey);
-      options.headers.remove(HeaderKeys.noAuthHeaderKey);
+      options.headers.remove(Constants.authHeaderKey);
+      options.headers.remove(Constants.noAuthHeaderKey);
       return;
     }
     if (hasAuthHeader) {
       var token = await getToken();
-      options.headers[HeaderKeys.authHeaderKey] = "Bearer $token";
+      options.headers[Constants.authHeaderKey] = "Bearer $token";
     }
 
     options.queryParameters.removeWhere((key, value) => value == null);

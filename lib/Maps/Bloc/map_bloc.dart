@@ -121,6 +121,11 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       addressComponents.add(place.subLocality);
     if (place.locality != null && place.locality.isNotEmpty)
       addressComponents.add(place.locality);
+    if (place.subAdministrativeArea != null &&
+        place.subAdministrativeArea.isNotEmpty)
+      addressComponents.add(place.subAdministrativeArea);
+    if (place.administrativeArea != null && place.administrativeArea.isNotEmpty)
+      addressComponents.add(place.administrativeArea);
     if (place.postalCode != null && place.postalCode.isNotEmpty)
       addressComponents.add(place.postalCode);
     if (place.country != null && place.country.isNotEmpty)
@@ -187,7 +192,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   Stream<MapState> _mapLocationSelectionOutToState(
       LocationSelectionOutEvent event) async* {
     LatLng latLng = LatLng(event.latitude, event.longitude);
-    String address = await getAddress(latLng, false);
+    String address = await getAddress(latLng, event.fullAddress);
     yield MapState(address, latLng, true, false, false, true);
   }
 }

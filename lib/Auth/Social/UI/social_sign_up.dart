@@ -1,4 +1,6 @@
-import 'package:country_code_picker/country_code_picker.dart';
+//import 'package:country_code_picker/country_code_picker.dart';
+
+
 import 'package:delivoo/Auth/Social/SignUp/ProfileBloc/profile_bloc.dart';
 import 'package:delivoo/Auth/Social/SignUp/ProfileBloc/profile_event.dart';
 import 'package:delivoo/Auth/Social/SignUp/ProfileBloc/profile_state.dart';
@@ -11,6 +13,7 @@ import 'package:delivoo/Components/show_toast.dart';
 import 'package:delivoo/Locale/locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:country_picker/country_picker.dart';
 
 import '../../login_navigator.dart';
 
@@ -42,6 +45,7 @@ class _SocialLoginState extends State<SocialLogin> {
   SocialSignUpBloc _signUpBloc;
   ProfileBloc _profileBloc;
   String isoCode;
+  String phoneName;
 
   @override
   void initState() {
@@ -123,7 +127,7 @@ class _SocialLoginState extends State<SocialLogin> {
                         padding: const EdgeInsets.only(top: 30.0),
                         child: Row(
                           children: <Widget>[
-                            CountryCodePicker(
+                   /*         CountryCodePicker(
                               onChanged: (value) {
                                 isoCode = value.code;
                               },
@@ -135,11 +139,35 @@ class _SocialLoginState extends State<SocialLogin> {
                                       color: theme.secondaryHeaderColor),
                                 ),
                               ),
-                              initialSelection: '+91',
+                              initialSelection: '+1',
                               textStyle: theme.textTheme.caption,
                               showFlag: false,
                               showFlagDialog: true,
-                              favorite: ['+91', '+65', 'US'],
+                              favorite: ['+91', 'US'],
+                            ),*/
+                            GestureDetector(
+                              onTap: (){
+                                showCountryPicker(
+                                  context: context,
+                               //   exclude: <String>['KN', 'MF'],
+                                  showPhoneCode: true,
+                                  onSelect: ( country) {
+                                    setState(() {
+                                      isoCode=country.countryCode.toUpperCase();
+                                      phoneName= "+"+country.phoneCode;
+                                    });
+                                  },
+                                );
+                              },
+                              child: SizedBox(
+                                height: 26,
+                                child: Text(
+                                  phoneName,
+                                  textAlign:TextAlign.center,
+                                  style: theme.textTheme.subtitle2
+                                      .copyWith(color: theme.secondaryHeaderColor),
+                                ),
+                              ),
                             ),
 
                             //takes phone number as input

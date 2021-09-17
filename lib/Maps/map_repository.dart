@@ -4,9 +4,9 @@ import 'package:delivoo/AppConfig/app_config.dart';
 import 'package:delivoo/Maps/location_selected.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:location/location.dart' as loc;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:location/location.dart' as loc;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,7 +35,6 @@ class MapRepository {
         desiredAccuracy: LocationAccuracy.best);
     return position;
   }
-
   Future<LocationSelected> getSelectedLocation() async {
     var prefs = await SharedPreferences.getInstance();
     Map savedLocationMap = await prefs.containsKey("current_location")

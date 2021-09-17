@@ -1,7 +1,6 @@
-import 'package:delivoo/JsonFiles/Message/message.dart';
+import 'package:delivoo/JsonFiles/Chat/message.dart';
 import 'package:delivoo/Themes/colors.dart';
 import 'package:delivoo/Themes/style.dart';
-import 'package:delivoo/UtilityFunctions/read_timestamp.dart';
 import 'package:flutter/material.dart';
 
 class MessageBubble extends StatelessWidget {
@@ -32,7 +31,7 @@ class MessageBubble extends StatelessWidget {
                     isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    message.text,
+                    message.body,
                     style: isMe
                         ? bottomBarTextStyle
                         : Theme.of(context)
@@ -44,7 +43,7 @@ class MessageBubble extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Text(
-                        readTimestamp(message.time.seconds),
+                        message.timeDiff,
                         style: TextStyle(
                           fontSize: 10.0,
                           color: isMe
@@ -52,14 +51,15 @@ class MessageBubble extends StatelessWidget {
                               : kLightTextColor,
                         ),
                       ),
-                      isMe
-                          ? Icon(
-                              Icons.check_circle,
-                              color:
-                                  message.isRead ? Colors.blue : kDisabledColor,
-                              size: 12.0,
-                            )
-                          : SizedBox.shrink(),
+                      // isMe
+                      //     ? Icon(
+                      //         Icons.check_circle,
+                      //         color: message.delivered
+                      //             ? Colors.blue
+                      //             : kDisabledColor,
+                      //         size: 12.0,
+                      //       )
+                      //     : SizedBox.shrink(),
                     ],
                   ),
                 ],

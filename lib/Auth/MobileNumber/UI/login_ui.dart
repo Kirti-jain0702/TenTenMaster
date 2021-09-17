@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:country_picker/country_picker.dart';
 import 'package:delivoo/AppConfig/app_config.dart';
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:delivoo/Components/entry_field.dart';
 import 'package:delivoo/Locale/locales.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,41 @@ class LoginUI extends StatefulWidget {
 
 class _LoginUIState extends State<LoginUI> {
   TextEditingController _controller = TextEditingController();
-  String isoCode;
+  String phoneName = "+91";
+  String isoCode = "IN";
+
+
+  @override
+  void initState() {
+    if (AppConfig.isDemoMode) {
+      isoCode = "IN";
+      _controller.text = "9898989898";
+
+      Future.delayed(
+          Duration(seconds: 1),
+          () => showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(AppLocalizations.of(context).demo_login_title),
+                  content:
+                      Text(AppLocalizations.of(context).demo_login_message),
+                  actions: <Widget>[
+                    MaterialButton(
+                      child: Text(AppLocalizations.of(context).okay),
+                      textColor: Theme.of(context).primaryColor,
+                      shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                              color: Theme.of(context).backgroundColor)),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                );
+              }));
+    }
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -55,7 +89,7 @@ class _LoginUIState extends State<LoginUI> {
                 padding: EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
                   children: <Widget>[
-                    CountryCodePicker(
+                 /*   CountryCodePicker(
                       onChanged: (value) {
                         isoCode = value.code;
                       },
@@ -67,11 +101,40 @@ class _LoginUIState extends State<LoginUI> {
                               .copyWith(color: theme.secondaryHeaderColor),
                         ),
                       ),
-                      initialSelection: '+91',
+                      initialSelection: AppConfig.isDemoMode ? '+91' : '+1',
                       textStyle: theme.textTheme.caption,
-                      showFlag: true,
+                      showFlag: false,
                       showFlagDialog: true,
-                      favorite: ['+91', '+65', 'US'],
+                      favorite: ['+91', 'US'],
+                    ),*/
+                    GestureDetector(
+                      onTap: () {
+                        showCountryPicker(
+                          context: context,
+                          showPhoneCode: true,
+                          //countryFilter: ['IN','US','SG'],
+                            FavCountries: ['IN','US','SG'],
+                          countryListTheme: CountryListThemeData(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(16),
+                                  topRight: Radius.circular(16))),
+                          onSelect: (country) {
+                            setState(() {
+                              isoCode = country.countryCode.toUpperCase();
+                              phoneName = "+" + country.phoneCode;
+                            });
+                          },
+                        );
+                      },
+                      child: SizedBox(
+                        height: 26,
+                        child: Text(
+                          phoneName,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.subtitle2
+                              .copyWith(color: theme.secondaryHeaderColor),
+                        ),
+                      ),
                     ),
 
                     //takes phone number as input
@@ -106,36 +169,32 @@ class _LoginUIState extends State<LoginUI> {
                   ],
                 ),
               ),
-              if (AppConfig.enableLoginWithFacebook ||
-                  AppConfig.enableLoginWithFacebook)
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 4.0),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 32.0,
-                    color: theme.cardColor,
-                    child: Center(
-                      child: Text(
-                        locale.or,
-                        style: theme.textTheme.bodyText2,
-                      ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 4.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 32.0,
+                  color: theme.cardColor,
+                  child: Center(
+                    child: Text(
+                      locale.or,
+                      style: theme.textTheme.bodyText2,
                     ),
                   ),
                 ),
-              if (AppConfig.enableLoginWithFacebook)
-                SocialLoginButton(
-                  locale.facebook,
-                  Color(0xff3a559f),
-                  'images/ic_login_facebook.png',
-                  () => widget.loginPageInteractor.loginWithFacebook(),
-                ),
-              if (AppConfig.enableLoginWithGoogle)
-                SocialLoginButton(
-                  locale.google,
-                  theme.scaffoldBackgroundColor,
-                  'images/ic_login_google.png',
-                  () => widget.loginPageInteractor.loginWithGoogle(),
-                ),
+              ),
+              SocialLoginButton(
+                locale.facebook,
+                Color(0xff3a559f),
+                'images/ic_login_facebook.png',
+                () => widget.loginPageInteractor.loginWithFacebook(),
+              ),
+              SocialLoginButton(
+                locale.google,
+                theme.scaffoldBackgroundColor,
+                'images/ic_login_google.png',
+                () => widget.loginPageInteractor.loginWithGoogle(),
+              ),
               if (Platform.isIOS)
                 SocialLoginButton(
                   locale.apple,

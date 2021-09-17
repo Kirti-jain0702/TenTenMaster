@@ -1,6 +1,8 @@
 import 'package:delivoo/Chat/UI/chatting_page.dart';
 import 'package:delivoo/Components/cached_image.dart';
 import 'package:delivoo/Components/entry_field.dart';
+import 'package:delivoo/Constants/constants.dart';
+import 'package:delivoo/JsonFiles/Chat/chat.dart';
 import 'package:delivoo/JsonFiles/Order/Get/order_data.dart';
 import 'package:delivoo/Locale/locales.dart';
 import 'package:delivoo/Themes/colors.dart';
@@ -22,8 +24,14 @@ class _SlideUpPanelState extends State<SlideUpPanel> {
   Widget build(BuildContext context) {
     var order = widget.orderData;
     return DraggableScrollableSheet(
-      minChildSize: order.orderType.toLowerCase() != 'custom' ? 0.17 : 0.15,
-      initialChildSize: order.orderType.toLowerCase() != 'custom' ? 0.17 : 0.15,
+      minChildSize:
+          order.delivery != null && order.orderType.toLowerCase() != 'custom'
+              ? 0.17
+              : 0.05,
+      initialChildSize:
+          order.delivery != null && order.orderType.toLowerCase() != 'custom'
+              ? 0.17
+              : 0.05,
       maxChildSize: 0.975,
       builder: (context, controller) {
         return Container(
@@ -47,7 +55,8 @@ class _SlideUpPanelState extends State<SlideUpPanel> {
                           ),
                         ),
                       ),
-                      if (order.delivery != null)
+                      if (order.delivery != null &&
+                          order.orderType.toLowerCase() != 'custom')
                         Hero(
                           tag: 'Delivery Boy',
                           child: ListTile(
@@ -77,56 +86,57 @@ class _SlideUpPanelState extends State<SlideUpPanel> {
                               fit: BoxFit.fill,
                               child: Row(
                                 children: <Widget>[
-                                  if (order.orderType.toLowerCase() != 'custom')
-                                    IconButton(
-                                      icon: Icon(Icons.message,
-                                          color: kMainColor),
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ChattingPage(
-                                                        order, false)));
-                                      },
-                                    ),
+                                  IconButton(
+                                    icon:
+                                        Icon(Icons.message, color: kMainColor),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ChattingPage(
+                                            Chat.fromOrder(
+                                                order, Constants.ROLE_DELIVERY),
+                                            order.id,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
                                   IconButton(
                                     icon: Icon(Icons.phone, color: kMainColor),
-                                    onPressed: () {
-                                      makePhoneCall(order
-                                          .delivery.delivery.user.mobileNumber);
-                                    },
+                                    onPressed: () => makePhoneCall(order
+                                        .delivery.delivery.user.mobileNumber),
                                   ),
                                 ],
                               ),
                             ),
                           ),
                         )
-                      else
-                        ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: Theme.of(context).primaryColor,
-                            foregroundColor:
-                                Theme.of(context).scaffoldBackgroundColor,
-                            child: Icon(Icons.person),
-                          ),
-                          title: Text(
-                            AppLocalizations.of(context)
-                                .getTranslationOf('not_assigned_yet'),
-                            style: Theme.of(context).textTheme.headline4,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(context)
-                                .getTranslationOf('delivery_partner'),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline6
-                                .copyWith(
-                                    fontSize: 11.7,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xffc2c2c2)),
-                          ),
-                        ),
+                      // else
+                      //   ListTile(
+                      //     leading: CircleAvatar(
+                      //       backgroundColor: Theme.of(context).primaryColor,
+                      //       foregroundColor:
+                      //           Theme.of(context).scaffoldBackgroundColor,
+                      //       child: Icon(Icons.person),
+                      //     ),
+                      //     title: Text(
+                      //       AppLocalizations.of(context)
+                      //           .getTranslationOf('not_assigned_yet'),
+                      //       style: Theme.of(context).textTheme.headline4,
+                      //     ),
+                      //     subtitle: Text(
+                      //       AppLocalizations.of(context)
+                      //           .getTranslationOf('delivery_partner'),
+                      //       style: Theme.of(context)
+                      //           .textTheme
+                      //           .headline6
+                      //           .copyWith(
+                      //               fontSize: 11.7,
+                      //               fontWeight: FontWeight.w500,
+                      //               color: Color(0xffc2c2c2)),
+                      //     ),
+                      //   ),
                     ],
                   ),
                 ),

@@ -52,17 +52,26 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
 
   Stream<OrdersState> _mapFetchPastOrdersToState(int page) async* {
     yield LoadingOrdersState();
-    if (_orders == null || page == 1) _orders = [];
+    if (_orders == null || page == 1) {
+      _orders = [];
+    } else {
+      _orders.add(OrderData.loadingOrder());
+      yield SuccessOrdersState(_orders);
+    }
     _isLoading = true;
     try {
       BaseListResponse<OrderData> orderRes = _isOrdersNew
           ? await _repository.getOrdersNew(page)
           : await _repository.getOrdersPast(page);
+      if (_orders.isNotEmpty && _orders[_orders.length - 1].isLoadingOrder()) {
+        _orders.removeAt(_orders.length - 1);
+      }
       for (OrderData orderData in orderRes.data) orderData.setup();
-      _orders.addAll(orderRes.data);
       _page = orderRes.meta.current_page;
       _allDone = orderRes.meta.current_page == orderRes.meta.last_page;
       _isLoading = false;
+      yield LoadingOrdersState();
+      _orders.addAll(orderRes.data);
       yield SuccessOrdersState(_orders);
       await _registerOrdersUpdates();
     } catch (e) {

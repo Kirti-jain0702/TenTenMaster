@@ -60,33 +60,26 @@ class _ItemsBodyState extends State<ItemsBody> {
                             Icon(
                               Icons.location_on,
                               color: kIconColor,
-                              size: 15,
+                              size: 10,
                             ),
                             SizedBox(width: 10.0),
                             Text(
                               Helper.formatDistanceString(
                                   (widget.vendor.distance ?? 0),
                                   AppSettings.distanceMetric),
-                              style: Theme.of(context).textTheme.caption.copyWith(
-                                color: kLightTextColor,
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: Theme.of(context).textTheme.overline,
                             ),
                             Text(
-                              ' | ',
+                              '| ',
                               style: Theme.of(context)
                                   .textTheme
                                   .overline
-                                  .copyWith(color: kMainColor,fontSize: 12.0,),
+                                  .copyWith(color: kMainColor),
                             ),
                             Text(
                               widget.vendor.area ?? '',
-                              style: Theme.of(context).textTheme.caption.copyWith(
-                                color: kLightTextColor,
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.bold,
-                              ),                            ),
+                              style: Theme.of(context).textTheme.overline,
+                            ),
                           ],
                         ),
                         SizedBox(height: 8.0),
@@ -99,7 +92,7 @@ class _ItemsBodyState extends State<ItemsBody> {
                               Icon(
                                 Icons.access_time,
                                 color: kIconColor,
-                                size: 15,
+                                size: 10,
                               ),
                               SizedBox(width: 10.0),
                               Text(
@@ -108,38 +101,30 @@ class _ItemsBodyState extends State<ItemsBody> {
                                     ' ${widget.vendor.getMeta()?.time ?? 30} ' +
                                     AppLocalizations.of(context)
                                         .getTranslationOf('mins'),
-                                style: Theme.of(context).textTheme.caption.copyWith(
-                                  color: kLightTextColor,
-                                  fontSize: 12.0,
-                                  fontWeight: FontWeight.bold,
-                                ),                              
+                                style: Theme.of(context).textTheme.overline,
                               ),
                               Spacer(),
-                              Icon(Icons.star, color: kMainColor, size: 15),
+                              Icon(Icons.star, color: kMainColor, size: 10),
                               SizedBox(width: 8.0),
                               Text(
                                 widget.vendor.ratings.toString(),
                                 style: Theme.of(context)
                                     .textTheme
                                     .overline
-                                    .copyWith(color: kMainColor, fontSize: 12.0,),
+                                    .copyWith(color: kMainColor),
                               ),
                               SizedBox(width: 8.0),
                               Text(
                                 '${widget.vendor.ratingsCount} ' +
                                     AppLocalizations.of(context)
                                         .getTranslationOf('reviews'),
-                                style: Theme.of(context).textTheme.caption.copyWith(
-                                  color: kLightTextColor,
-                                  fontSize: 12.0,
-                                  fontWeight: FontWeight.bold,
-                                ), 
+                                style: Theme.of(context).textTheme.overline,
                               ),
                               SizedBox(width: 8.0),
                               Icon(
                                 Icons.arrow_forward_ios,
                                 color: kIconColor,
-                                size: 15,
+                                size: 10,
                               ),
                             ],
                           ),

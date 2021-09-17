@@ -8,6 +8,8 @@ class SupportState extends Equatable {
   bool get stringify => true;
 }
 
+class InitialSupportState extends SupportState {}
+
 class LoadingSupportState extends SupportState {}
 
 class SuccessSupportState extends SupportState {}

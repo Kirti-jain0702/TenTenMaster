@@ -17,6 +17,14 @@ class LanguageCubit extends Cubit<Locale> {
         : AppConfig.languageDefault);
   }
 
+  Future<String> getCurrentLanguageVal() async {
+    var prefs = await SharedPreferences.getInstance();
+
+    return Future.value(prefs.containsKey('locale')
+        ? prefs.getString('locale')
+        : AppConfig.languageDefault);
+  }
+
   setCurrentLanguage(String langCode, bool save) async {
     if (save) {
       var prefs = await SharedPreferences.getInstance();

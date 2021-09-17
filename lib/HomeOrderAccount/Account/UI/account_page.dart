@@ -20,7 +20,7 @@ class AccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).account,
+        title: Text(AppLocalizations.of(context).getTranslationOf("my_account"),
             style: Theme.of(context).textTheme.bodyText1),
         centerTitle: true,
       ),

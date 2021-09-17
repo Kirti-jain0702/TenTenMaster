@@ -2,9 +2,13 @@ import 'dart:convert';
 
 import 'package:delivoo/Auth/BLOC/auth_bloc.dart';
 import 'package:delivoo/Auth/BLOC/auth_state.dart';
+import 'package:delivoo/Cart/view_cart.dart';
 import 'package:delivoo/Components/custom_dialog.dart';
 import 'package:delivoo/Components/search_bar.dart';
 import 'package:delivoo/Components/show_toast.dart';
+import 'package:delivoo/HomeOrderAccount/Home/Bloc/BannerBloc/Banner_bloc.dart';
+import 'package:delivoo/HomeOrderAccount/Home/Bloc/BannerBloc/Banner_event.dart';
+import 'package:delivoo/HomeOrderAccount/Home/Bloc/BannerBloc/Banner_state.dart';
 import 'package:delivoo/HomeOrderAccount/Home/Bloc/CartQuantityBloc/cart_quantity_bloc.dart';
 import 'package:delivoo/HomeOrderAccount/Home/Bloc/CartQuantityBloc/cart_quantity_state.dart';
 import 'package:delivoo/HomeOrderAccount/Home/Bloc/CategoryBloc/category_bloc.dart';
@@ -21,19 +25,18 @@ import 'package:delivoo/JsonFiles/Products/product_data.dart';
 import 'package:delivoo/Locale/locales.dart';
 import 'package:delivoo/Maps/UI/location_page.dart';
 import 'package:delivoo/Maps/location_selected.dart';
-import 'package:delivoo/Routes/routes.dart';
 import 'package:delivoo/Themes/colors.dart';
 import 'package:delivoo/Themes/style.dart';
+import 'package:delivoo/UtilityFunctions/HomeSliderLoaderWidget.dart';
+import 'package:delivoo/UtilityFunctions/HomeSliderWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:marquee_widget/marquee_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../Locale/locales.dart';
 import 'Stores/stores_page.dart';
-import 'home_page_banners.dart';
 import 'search_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -49,6 +52,10 @@ class HomePage extends StatelessWidget {
         BlocProvider<CategoryBloc>(
           create: (BuildContext context) =>
               CategoryBloc()..add(FetchCategoryEvent()),
+        ),
+        BlocProvider<BannerBloc>(
+          create: (BuildContext context) =>
+              BannerBloc()..add(FetchBannerEvent()),
         )
       ],
       child: HomeBody(),
@@ -63,6 +70,7 @@ class HomeBody extends StatefulWidget {
 
 class _HomeBodyState extends State<HomeBody> with WidgetsBindingObserver {
   HomeBloc _homeBloc;
+
 
   getLatLng() async {
     await _homeBloc.getLatLng();
@@ -181,7 +189,12 @@ class _HomeBodyState extends State<HomeBody> with WidgetsBindingObserver {
                             showToast(AppLocalizations.of(context)
                                 .getTranslationOf('cart_is_empty'));
                           } else {
-                            Navigator.pushNamed(context, PageRoutes.checkout);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ViewCart(() => Navigator.pop(context)),
+                                ));
                           }
                         },
                       ),
@@ -196,7 +209,6 @@ class _HomeBodyState extends State<HomeBody> with WidgetsBindingObserver {
                                   backgroundColor: theme.primaryColor,
                                   child: Text(
                                     cartState.quantity.toString(),
-                                    // cartProducts.length.toString(),
                                     style: theme.textTheme.overline.copyWith(
                                         color: theme.scaffoldBackgroundColor,
                                         fontSize: 8),
@@ -213,8 +225,8 @@ class _HomeBodyState extends State<HomeBody> with WidgetsBindingObserver {
             ),
             body: Column(
               children: <Widget>[
-                Banners(),
-/*                 Padding(
+
+          /*      Padding(
                   padding: EdgeInsets.only(top: 16.0, left: 24.0, bottom: 20.0),
                   child: Row(
                     children: <Widget>[
@@ -233,76 +245,99 @@ class _HomeBodyState extends State<HomeBody> with WidgetsBindingObserver {
                       ),
                     ],
                   ),
-                ), */
-                Container(
-                  margin: EdgeInsets.only(top: 8, bottom: 6),
-                  child: CustomSearchBar(
-                      hint: AppLocalizations.of(context)
-                          .getTranslationOf('search_stores'),
-                      readOnly: true,
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  SearchPage.searchStores()))),
-                ),
-                BlocBuilder<CategoryBloc, CategoryState>(
-                  builder: (context, categoryState) {
-                    if (categoryState is SuccessCategoryState) {
-                      return Expanded(
-                        flex: 3,
-                        child: GridView.builder(
-                          shrinkWrap: true,
-                          physics: BouncingScrollPhysics(),
-                          padding: EdgeInsets.only(
-                              left: 20.0, right: 20.0, bottom: 20.0),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 20.0,
-                            mainAxisSpacing: 20.0,
-                          ),
-                          itemCount: categoryState.listOfCategoryData.length,
-                          scrollDirection: Axis.vertical,
-                          itemBuilder: (context, index) {
-                            var category =
-                                categoryState.listOfCategoryData[index];
-                            return CategoryGridItem(category, () {
-                              if (category.slug
-                                  .toLowerCase()
-                                  .contains('custom')) {
-                                if (BlocProvider.of<AuthBloc>(context).state
-                                    is Authenticated)
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              CustomDeliveryPage()));
-                                else
-                                  showCustomDialog(context,
-                                      content:
-                                          AppLocalizations.of(context).login);
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => StoresPage(
-                                            category.title, category.id)));
-                              }
-                            });
+                ),*/
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        BlocBuilder<BannerBloc, BannerState>(
+                          builder: (context, BannerState) {
+                            if (BannerState is SuccessBannerState) {
+                              return HomeSliderWidget(
+                                  slides:
+                                      BannerState.listOfBannerData.data);
+                            } else if (BannerState is FailureBannerState) {
+                              return Center(
+                                  child: Text(AppLocalizations.of(context)
+                                      .getTranslationOf(
+                                          'check_your_network')));
+                            } else {
+                              return HomeSliderLoaderWidget();
+                            }
                           },
                         ),
-                      );
-                    } else if (categoryState is FailureCategoryState) {
-                      return Expanded(
-                        child: Center(
-                            child: Text(AppLocalizations.of(context)
-                                .getTranslationOf('check_your_network'))),
-                      );
-                    } else {
-                      return HomePlaceHolder();
-                    }
-                  },
+                        Container(
+                          margin: EdgeInsets.only( bottom: 26),
+                          child: CustomSearchBar(
+                              hint: AppLocalizations.of(context)
+                                  .getTranslationOf('search_stores'),
+                              readOnly: true,
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          SearchPage.searchStores()))),
+                        ),
+                        BlocBuilder<CategoryBloc, CategoryState>(
+                          builder: (context, categoryState) {
+                            if (categoryState is SuccessCategoryState) {
+                              return GridView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 10.0,
+                                   mainAxisSpacing: 10.0,
+                                ),
+                                itemCount:
+                                    categoryState.listOfCategoryData.length,
+                                scrollDirection: Axis.vertical,
+                                itemBuilder: (context, index) {
+                                  var category =
+                                      categoryState.listOfCategoryData[index];
+                                  return CategoryGridItem(category, () {
+                                    if (category.slug
+                                        .toLowerCase()
+                                        .contains('custom')) {
+                                      if (BlocProvider.of<AuthBloc>(context)
+                                          .state is Authenticated)
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    CustomDeliveryPage()));
+                                      else
+                                        showCustomDialog(context,
+                                            content:
+                                                AppLocalizations.of(context)
+                                                    .login);
+                                    } else {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => StoresPage(
+                                                  category.title,
+                                                  category.id)));
+                                    }
+                                  });
+                                },
+                              );
+                            } else if (categoryState is FailureCategoryState) {
+                              return Center(
+                                  child: Text(AppLocalizations.of(context)
+                                      .getTranslationOf(
+                                          'check_your_network')));
+                            } else {
+                              return HomePlaceHolder();
+                            }
+                          },
+                        )
+                      ],
+                    ),
+                  ),
                 )
               ],
             ),
@@ -327,10 +362,12 @@ class _HomeBodyState extends State<HomeBody> with WidgetsBindingObserver {
       items: state.addresses.map<DropdownMenuItem<String>>((String address) {
         return DropdownMenuItem<String>(
           value: address,
-          child: Text(
-            AppLocalizations.of(context).getTranslationOf(address),
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodyText1,
+          child: Marquee(
+            child: Text(
+              AppLocalizations.of(context).getTranslationOf(address),
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
           ),
         );
       }).toList(),

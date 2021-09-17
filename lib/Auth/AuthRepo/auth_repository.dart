@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:delivoo/Auth/AuthRepo/test_status_code.dart';
 import 'package:delivoo/Auth/Verification/cubit/verification_cubit.dart';
+import 'package:delivoo/Constants/constants.dart';
 import 'package:delivoo/JsonFiles/Auth/Responses/login_response.dart';
 import 'package:delivoo/JsonFiles/Auth/Responses/sign_up_response.dart';
 import 'package:delivoo/JsonFiles/Auth/Responses/user_info.dart';
@@ -17,6 +18,7 @@ import 'package:delivoo/JsonFiles/Support/support_json.dart';
 import 'package:delivoo/JsonFiles/User/update_user_request.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -224,11 +226,18 @@ class AuthRepo {
     return client.updateUser(updateUserRequestMap);
   }
 
-  Future<UserInformation> updateNotificationId() async {
+  Future<UserInformation> updateNotificationId(int userId) async {
     var status = await OneSignal.shared.getPermissionSubscriptionState();
     var playerId = status.subscriptionStatus.userId;
+    //onfirebase
+    FirebaseDatabase.instance
+        .reference()
+        .child(Constants.REF_USERS_FCM_IDS)
+        .child("$userId${Constants.ROLE_USER}")
+        .set(playerId);
+    //onserver
     Map<String, dynamic> updateUserRequestMap =
-        Notification("{\"customer\":\"$playerId\"}").toJson();
+        Notification("{\"${Constants.ROLE_USER}\":\"$playerId\"}").toJson();
     return client.updateUser(updateUserRequestMap);
   }
 
@@ -277,7 +286,7 @@ class AuthRepo {
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('token', loggedInResponse.token);
       await saveUser(loggedInResponse.userInfo);
-      await updateNotificationId();
+      await updateNotificationId(loggedInResponse.userInfo.id);
 
       verificationCallback.onCodeVerified(loggedInResponse);
     } catch (e) {
