@@ -1,0 +1,111 @@
+name: delivoo
+description: A new Flutter application.
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^0.1.2
+  flutter_phoenix: ^0.1.0
+  country_code_picker: ^1.7.0
+  grouped_buttons: ^1.0.4
+  flutter_bloc: ^6.1.1
+  equatable: ^1.2.5
+  flutter_rating_bar: ^3.2.0+1
+  libphonenumber: ^1.0.2
+  shared_preferences: ^0.5.12+4
+  json_annotation: ^3.1.1
+  geolocator: ^5.3.1
+  google_maps_flutter: ^1.1.1
+  flutter_google_places: ^0.2.8
+  url_launcher: ^5.7.10
+  location: ^3.2.4
+  retrofit: ^1.3.4+1
+  dio: ^3.0.10
+  cached_network_image: ^2.5.0
+  shimmer: ^1.1.2
+  fluttertoast: ^7.1.1
+  flutter_polyline_points: ^0.2.4
+  onesignal_flutter: ^2.6.3
+  dotted_border: ^2.0.0
+  simple_moment: ^1.1.1
+  clipboard: ^0.1.3
+  pretty_dio_logger: ^1.1.1
+  stripe_payment: ^1.1.1
+  progress_dialog: ^1.2.4
+  file_picker: ^2.0.13
+  uuid: ^2.2.2
+  carousel_slider: ^3.0.0
+
+  #firebase
+  firebase_core: ^0.7.0
+  firebase_analytics: ^7.0.0
+  firebase_auth: ^0.20.0+1
+  cloud_firestore: ^0.16.0
+  firebase_database: ^6.0.0
+  firebase_storage: ^7.0.0
+
+  #sign in
+  google_sign_in: ^4.5.9
+  flutter_facebook_login: ^3.0.0
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner: ^1.10.6
+  json_serializable: ^3.5.0
+  retrofit_generator: ^1.4.1+1
+  flutter_launcher_icons: "^0.8.1"
+  flutter_launcher_name: "^0.0.1"
+  flutter_native_splash: ^0.1.9
+
+
+flutter_icons:
+  android: "ic_launcher"
+  ios: true
+  image_path: "images/app_icon.png"
+
+flutter_native_splash:
+  image: "images/app_splash.png"
+  color: "#04AA6D"
+
+flutter_launcher_name:
+  name: "TENTEN"
+
+
+dependency_overrides:
+  intl: ^0.17.0-nullsafety.2
+
+
+flutter:
+  uses-material-design: true
+  assets:
+    - images/
+    - images/account/
+    - images/address/
+    - images/custom/
+    - images/footermenu/
+    - images/icons/
+    - images/logos/
+    - images/maincategory/
+    - images/veg/
+    - images/veg/Sellers/
+    - images/veg/Vegetables/
+    - images/payment/
+
+  fonts:
+    - family: GoogleSans
+      fonts:
+        - asset: font/GoogleSans-Bold.ttf
+        - asset: font/GoogleSans-Regular.ttf
+        - asset: font/GoogleSans-Medium.ttf
